@@ -1,4 +1,4 @@
-import CryptoJS from "crypto-js";
+import CryptoJS, { enc } from "crypto-js";
 import { Buffer } from "buffer";
 import * as Random from "expo-crypto";
 
@@ -35,7 +35,8 @@ const encryptData = (data: Buffer, key: Buffer, iv: Buffer): string => {
 const decryptData = (
   encryptedData: string,
   key: Buffer,
-  iv: Buffer
+  iv: Buffer,
+  encoding = CryptoJS.enc.Utf8
 ): string => {
   console.log(
     "cbc",
@@ -54,8 +55,10 @@ const decryptData = (
   });
 
   // Convert decrypted data to UTF-8 string
-  console.log("cbc", "decrypted", decrypted.toString());
-  return decrypted.toString(CryptoJS.enc.Utf8);
+  console.log("cbc", "decrypted", Object.keys(CryptoJS.enc));
+  console.log("cbc", "decrypted", "Base64", decrypted.toString(CryptoJS.enc.Base64));
+  console.log("cbc", "encoding", decrypted.toString(encoding));
+  return decrypted.toString(encoding);
 };
 
 const packageData = (iv: Buffer, encryptedData: Buffer): Buffer => {
@@ -82,9 +85,15 @@ const encryptAndPackageData = (
   return packageData(iv, Buffer.from(encryptedData, "base64"));
 };
 
-const unpackageAndDecryptData = (dataPackage: Buffer, key: Buffer): Buffer => {
+const unpackageAndDecryptData = (
+  dataPackage: Buffer,
+  key: Buffer,
+  encoding = CryptoJS.enc.Utf8
+): Buffer => {
   const { iv, encryptedData } = unpackageData(dataPackage);
-  return Buffer.from(decryptData(encryptedData.toString("base64"), key, iv));
+  return Buffer.from(
+    decryptData(encryptedData.toString("base64"), key, iv, encoding)
+  );
 };
 
 export {

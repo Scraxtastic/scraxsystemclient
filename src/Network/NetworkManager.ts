@@ -1,6 +1,7 @@
 import { encryptAndPackageData, unpackageAndDecryptData } from "./cbc";
 import { Buffer } from "buffer";
 import { wrapperKeys } from "./wrapperKeys";
+import CryptoJS from "crypto-js";
 
 export class NetworkManager {
   static instance: NetworkManager = null;
@@ -69,16 +70,24 @@ export class NetworkManager {
             "encryptedData",
             Buffer.from(arrayBuffer).toString("base64")
           );
-          for (let i = wrapperKeys.length - 1; i >= 0; i--) {
-            console.log("WClient:", "i", i);
-            unwrappedData = unpackageAndDecryptData(
-              unwrappedData,
-              Buffer.from(wrapperKeys[i], "base64")
-            );
-          }
-          let decryptedData = unpackageAndDecryptData(unwrappedData, key);
-          console.log("WClient:", "decryptedData", decryptedData);
-          this.onUpdate(decryptedData.toString());
+          // for (let i = wrapperKeys.length - 1; i >= 0; i--) {
+          //   console.log("WClient:", "i", i);
+          //   unwrappedData = unpackageAndDecryptData(
+          //     unwrappedData,
+          //     Buffer.from(wrapperKeys[i], "base64"),
+          //     CryptoJS.enc.Base64
+          //   );
+          // }
+          let decryptedData = unpackageAndDecryptData(
+            unwrappedData,
+            key,
+            CryptoJS.enc.Base64
+          );
+          this.onUpdate(
+            Buffer.from(decryptedData.toString("utf-8"), "base64").toString(
+              "utf-8"
+            )
+          );
         };
         reader.onerror = (e) => {
           console.error("Error reading blob:", e);

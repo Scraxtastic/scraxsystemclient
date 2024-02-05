@@ -66,6 +66,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
+    "@types/crypto-js": "^4.2.2",
     "rn-nodeify": "github:tradle/rn-nodeify"
   },
   "private": true,

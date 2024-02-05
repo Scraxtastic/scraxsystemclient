@@ -4,6 +4,7 @@ import { Text, Button } from "@rneui/themed";
 import { NetworkManager } from "../Network/NetworkManager";
 import { useEffect, useState } from "react";
 import { Buffer } from "buffer";
+import { DataDetails } from "../Components/DataDetails";
 
 export interface OpenServerProps {
   server: Server;
@@ -11,8 +12,16 @@ export interface OpenServerProps {
 }
 
 export const OpenServer = (props: OpenServerProps) => {
-  const [networkManager, setNetworkManager] = useState<NetworkManager>(null);
   const [data, setData] = useState<string>("");
+  const [dataObject, setDataObject] = useState<any>({});
+
+  useEffect(() => {
+    try {
+      setDataObject(JSON.parse(data));
+    } catch (e) {
+      console.log("OpenServer", "Could not parse data", e);
+    }
+  }, [data]);
 
   useEffect(() => {
     const { ip, name, key, keyName } = props.server;
@@ -44,14 +53,20 @@ export const OpenServer = (props: OpenServerProps) => {
     console.log("OpenServer", "Connecting to", ip, keyName, key);
     netManager.onUpdate = setData;
     netManager.connectTo("ws://" + ip, keyName, Buffer.from(key, "base64"));
-    setNetworkManager(netManager);
   }, []);
 
   return (
     <>
       <Text h1>{props.server.name}</Text>
       <Button>Test</Button>
-      <Text>{data}</Text>
+      {dataObject &&
+        Object.keys(dataObject).map((key) => (
+          <DataDetails
+            key={key}
+            title={key}
+            data={JSON.stringify(dataObject[key])}
+          />
+        ))}
     </>
   );
 };
