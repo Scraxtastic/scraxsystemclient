@@ -13,33 +13,34 @@ export class NetworkManager {
   public isVerified: boolean;
   public onUpdate: (data: string) => void;
   constructor() {
-    console.log("Constructing NetworkManager…");
+    // console.log("Constructing NetworkManager…");
     if (!!NetworkManager.instance) {
-      console.log("NetworkManager:", "Instance already exists, returning…");
-      console.log(NetworkManager);
-      console.log(NetworkManager.instance);
+      // console.log("NetworkManager:", "Instance already exists, returning…");
+      // console.log(NetworkManager);
+      // console.log(NetworkManager.instance);
       if (!!NetworkManager.instance.socket) {
         NetworkManager.instance.socket.close();
       }
     }
     NetworkManager.instance = this;
-    console.log("NetworkManager:", "Instance created.");
+    // console.log("NetworkManager:", "Instance created.");
   }
 
   connectTo = (ip: string, name: string, key: Buffer) => {
-    console.log("WClient:", "connecting to ", ip, name);
-    console.log("WClient:", "WebSocket", WebSocket);
-    console.log("WClient:", "Buffer", Buffer.toString());
+    // console.log("WClient:", "connecting to ", ip, name);
+    // console.log("WClient:", "WebSocket", WebSocket);
+    // console.log("WClient:", "Buffer", Buffer.toString());
     const socket = new WebSocket(ip);
     socket.binaryType = "blob";
-    console.log("WClient:", "Socket created.");
+    // console.log("WClient:", "Socket created.");
     this.isConnecting = true;
     this.handleConnection(socket, key, name);
   };
 
   closeConnection = () => {
-    this.socket.close();
+    this.socket?.close();
     this.isConnected = false;
+    console.log("WClient:", "Connection closed.");
   };
 
   sendEncryptedMessage = async (
@@ -58,20 +59,14 @@ export class NetworkManager {
   };
 
   handleConnection = (socket: WebSocket, key: Buffer, name: string) => {
-    console.log("WClient", "Handling connection…");
+    // console.log("WClient", "Handling connection…");
     socket.onmessage = async (e) => {
       if (e.data instanceof Blob) {
         const reader = new FileReader();
         reader.onload = () => {
           const arrayBuffer = reader.result as ArrayBuffer;
           let unwrappedData = Buffer.from(arrayBuffer);
-          console.log(
-            "WClient:",
-            "encryptedData",
-            Buffer.from(arrayBuffer).toString("base64")
-          );
           for (let i = wrapperKeys.length - 1; i >= 0; i--) {
-            console.log("WClient:", "i", i);
             const decryptionStepData = unpackageAndDecryptData(
               unwrappedData,
               Buffer.from(wrapperKeys[i], "base64"),
@@ -99,7 +94,7 @@ export class NetworkManager {
         reader.readAsArrayBuffer(e.data); // Read the blob as an ArrayBuffer
       } else {
         // Handle non-blob data
-        console.log("Received data:", e.data);
+        // console.log("Received data:", e.data);
       }
     };
     socket.onclose = (e) => {
@@ -118,7 +113,7 @@ export class NetworkManager {
     socket.onopen = () => {
       this.isConnecting = false;
       this.isConnected = true;
-      console.log("WClient:", "Connected to server.");
+      // console.log("WClient:", "Connected to server.");
       this.sendEncryptedMessage(socket, Buffer.from(name), key);
     };
     // socket.on("error", (err) => {

@@ -66,16 +66,7 @@ export default class FileManager {
           encoding: FileSystem.EncodingType.UTF8,
         }
       );
-      console.log("FileManager:", "encryptedFileData", encryptedFileData);
       const fileData = decryptFileData(encryptedFileData);
-      console.log("FileManager:", "fileData", fileData.toString());
-
-      console.log(
-        "FileManager:",
-        "readFile",
-        "encryptedData",
-        encryptedFileData
-      );
       return fileData.toString();
     } catch (e) {
       console.error("FileManager:", "Error reading file", e);
@@ -88,24 +79,6 @@ export default class FileManager {
       const absolutePath = FileSystem.documentDirectory + path;
       this.ensureDirExists(path.split("/").slice(0, -1).join("/"));
       const encryptedData = encryptFileData(data);
-      console.log(
-        "FileManager:",
-        "saveFile",
-        "encryptedData",
-        encryptedData,
-        "data",
-        data.toString("base64")
-      );
-      const decryptData = decryptFileData(encryptedData);
-      const decryptData2 = decryptFileData(encryptedData);
-      console.log(
-        "FileManager:",
-        "saveFile",
-        "decryptData",
-        decryptData,
-        "decryptData2",
-        decryptData2
-      );
       await FileSystem.writeAsStringAsync(absolutePath, encryptedData, {
         encoding: FileSystem.EncodingType.UTF8,
       });

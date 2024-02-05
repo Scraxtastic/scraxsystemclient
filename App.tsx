@@ -9,6 +9,7 @@ import { Buffer } from "buffer";
 import { Servers } from "./src/Views/Servers";
 import { AddServer } from "./src/Views/AddServer";
 import { OpenServer } from "./src/Views/OpenServer";
+import { NetworkManager } from "./src/Network/NetworkManager";
 
 require("./test");
 
@@ -19,7 +20,7 @@ export default function App() {
   const [isCreating, setCreating] = useState(false);
   const [openServer, setOpenServer] = useState<Server>(null);
   const onServerUpdated = async (servers: Server[]) => {
-    console.log("Updated Servers", servers);
+    // console.log("Updated Servers", servers);
     await FileManager.ensureInstance().saveFile(
       serverFile,
       Buffer.from(JSON.stringify(servers))
@@ -37,6 +38,7 @@ export default function App() {
     if (openServer) {
       setOpenServer(null);
     }
+    NetworkManager.instance?.closeConnection();
   };
   BackHandler.addEventListener("hardwareBackPress", () => {
     onBack();
@@ -88,6 +90,7 @@ export default function App() {
       {openServer && (
         <View style={{ flex: 1, backgroundColor: "gray" }}>
           <OpenServer
+            key={openServer.name}
             server={openServer}
             onClosed={() => {
               setOpenServer(null);

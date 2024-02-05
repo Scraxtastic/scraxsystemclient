@@ -38,12 +38,6 @@ const decryptData = (
   iv: Buffer,
   encoding = CryptoJS.enc.Utf8
 ): string => {
-  console.log(
-    "cbc",
-    "decryptData",
-    key.toString("base64"),
-    iv.toString("base64")
-  );
   const keyWordArray = CryptoJS.lib.WordArray.create(key);
   const ivWordArray = CryptoJS.lib.WordArray.create(iv);
 
@@ -54,10 +48,6 @@ const decryptData = (
     padding: CryptoJS.pad.Pkcs7,
   });
 
-  // Convert decrypted data to UTF-8 string
-  console.log("cbc", "decrypted", Object.keys(CryptoJS.enc));
-  console.log("cbc", "decrypted", "Base64", decrypted.toString(CryptoJS.enc.Base64));
-  console.log("cbc", "encoding", decrypted.toString(encoding));
   return decrypted.toString(encoding);
 };
 
