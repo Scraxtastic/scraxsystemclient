@@ -70,14 +70,18 @@ export class NetworkManager {
             "encryptedData",
             Buffer.from(arrayBuffer).toString("base64")
           );
-          // for (let i = wrapperKeys.length - 1; i >= 0; i--) {
-          //   console.log("WClient:", "i", i);
-          //   unwrappedData = unpackageAndDecryptData(
-          //     unwrappedData,
-          //     Buffer.from(wrapperKeys[i], "base64"),
-          //     CryptoJS.enc.Base64
-          //   );
-          // }
+          for (let i = wrapperKeys.length - 1; i >= 0; i--) {
+            console.log("WClient:", "i", i);
+            const decryptionStepData = unpackageAndDecryptData(
+              unwrappedData,
+              Buffer.from(wrapperKeys[i], "base64"),
+              CryptoJS.enc.Base64
+            );
+            unwrappedData = Buffer.from(
+              decryptionStepData.toString("utf-8"),
+              "base64"
+            );
+          }
           let decryptedData = unpackageAndDecryptData(
             unwrappedData,
             key,
