@@ -1,0 +1,5 @@
+- Read Added Servers and display them with buttons
+- Make Servers deletable
+- Make Servers editable
+- Establish Connection to server
+- 

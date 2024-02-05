@@ -1,0 +1,69 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "node_modules/react-native-aes-crypto/.prettierrc.js",
+      "sha1": "92b5ea4e81243e5bf527cf730858993f6cac098d"
+    },
+    {
+      "path": "node_modules/react-native-aes-crypto/android/build.gradle",
+      "sha1": "abc465a216f414fcac97359e46cb5f2696cda93a"
+    },
+    {
+      "path": "node_modules/react-native-aes-crypto/android/src/main/AndroidManifest.xml",
+      "sha1": "b9a39ec377f699ce2ec49380f40940cdac41c95a"
+    },
+    {
+      "path": "node_modules/react-native-aes-crypto/android/src/main/java/com/tectiv3/aes/RCTAes.java",
+      "sha1": "862f629a862956ef9328b4553753a2f7f4b73c5f"
+    },
+    {
+      "path": "node_modules/react-native-aes-crypto/android/src/main/java/com/tectiv3/aes/RCTAesPackage.java",
+      "sha1": "016e9a6b0402d8a0bb62690876bca3eea18b66ca"
+    },
+    {
+      "path": "node_modules/react-native-aes-crypto/index.d.ts",
+      "sha1": "ee340893b231700966a4b24f75baaa2683b42369"
+    },
+    {
+      "path": "node_modules/react-native-aes-crypto/index.js",
+      "sha1": "04450f3a1084804ed1a395f7cb62ee8a9a169072"
+    },
+    {
+      "path": "node_modules/react-native-aes-crypto/ios/RCTAes/lib/AesCrypt.h",
+      "sha1": "7c0285f009b9db84bdeb30f4d69f532afd3e80db"
+    },
+    {
+      "path": "node_modules/react-native-aes-crypto/ios/RCTAes/lib/AesCrypt.m",
+      "sha1": "ef0bc96fdaa37c90271d51c0c66e8ac775347edf"
+    },
+    {
+      "path": "node_modules/react-native-aes-crypto/ios/RCTAes/RCTAes.h",
+      "sha1": "bb97327f10d8f23187c46e8a674a95d3dee55088"
+    },
+    {
+      "path": "node_modules/react-native-aes-crypto/ios/RCTAes/RCTAes.m",
+      "sha1": "ed12962719a9ff7e9070305284030e7efb11b3b3"
+    },
+    {
+      "path": "node_modules/react-native-aes-crypto/ios/RCTAes.xcodeproj/project.pbxproj",
+      "sha1": "5c16fddc998ad666931d381bcc7a7ada469c73e2"
+    },
+    {
+      "path": "node_modules/react-native-aes-crypto/LICENSE",
+      "sha1": "703c8c176aef006608ed7a517177ea0ce9ac7e23"
+    },
+    {
+      "path": "node_modules/react-native-aes-crypto/package.json",
+      "sha1": "c3971c6df54fd83d874cf7d3fb8d6a52186ae907"
+    },
+    {
+      "path": "node_modules/react-native-aes-crypto/react-native-aes.podspec",
+      "sha1": "eec9276d55cb18e17257e4d2032c3b6c692786d1"
+    },
+    {
+      "path": "node_modules/react-native-aes-crypto/README.md",
+      "sha1": "4497cf03047f4da1750ef2226765194a7c598f2a"
+    }
+  ]
+}
