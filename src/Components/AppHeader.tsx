@@ -27,13 +27,6 @@ export const AppHeader = (props: AppHeaderProps) => {
   );
 
   return (
-    // <AppBar
-    //   style={{ backgroundColor: "black" }}
-    //   title="Scrax System"
-    //   // subtitle="Scrax System"
-    //   leading={leftComponent}
-    //   trailing={rightComponent}
-    // />
     <Header
       backgroundColor="black"
       leftComponent={leftComponent}
