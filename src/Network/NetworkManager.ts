@@ -12,6 +12,10 @@ export class NetworkManager {
   public isConnecting: boolean;
   public isVerified: boolean;
   public onUpdate: (data: string) => void;
+  public onError: (error: string) => void;
+  private lastData: string = "";
+  private ip: string;
+  private name: string;
   constructor() {
     // console.log("Constructing NetworkManager…");
     if (!!NetworkManager.instance) {
@@ -30,6 +34,8 @@ export class NetworkManager {
     // console.log("WClient:", "connecting to ", ip, name);
     // console.log("WClient:", "WebSocket", WebSocket);
     // console.log("WClient:", "Buffer", Buffer.toString());
+    this.ip = ip;
+    this.name = name;
     const socket = new WebSocket(ip);
     socket.binaryType = "blob";
     // console.log("WClient:", "Socket created.");
@@ -82,14 +88,15 @@ export class NetworkManager {
             key,
             CryptoJS.enc.Base64
           );
-          this.onUpdate(
-            Buffer.from(decryptedData.toString("utf-8"), "base64").toString(
-              "utf-8"
-            )
-          );
+          this.lastData = Buffer.from(
+            decryptedData.toString("utf-8"),
+            "base64"
+          ).toString("utf-8");
+          this.onUpdate(this.lastData);
         };
         reader.onerror = (e) => {
           console.error("Error reading blob:", e);
+          this.onUpdate("Error reading blob." + "\n" + this.lastData);
         };
         reader.readAsArrayBuffer(e.data); // Read the blob as an ArrayBuffer
       } else {
@@ -106,14 +113,21 @@ export class NetworkManager {
         "reason:",
         e.reason
       );
+      // this.onUpdate("Connection closed." + "\n" + this.lastData);
     };
     socket.onerror = (e) => {
+      this.onError(
+        `Error connecting to server. ${this.name} (${
+          this.ip
+        }) msg: ${JSON.stringify(e)}`
+      );
       console.log("WClient:", "Socket error:", e);
     };
     socket.onopen = () => {
       this.isConnecting = false;
       this.isConnected = true;
       // console.log("WClient:", "Connected to server.");
+      this.onUpdate("Connected to server.");
       this.sendEncryptedMessage(socket, Buffer.from(name), key);
     };
     // socket.on("error", (err) => {

@@ -1,4 +1,4 @@
-import * as React from "react";
+import { AppBar } from "@react-native-material/core";
 import { Button, Header, Icon } from "@rneui/themed";
 
 export interface AppHeaderProps {
@@ -6,7 +6,7 @@ export interface AppHeaderProps {
   onBack: () => void;
   shallRenderBackButton: boolean;
 }
-const AppHeader = (props: AppHeaderProps) => {
+export const AppHeader = (props: AppHeaderProps) => {
   const leftComponent = (
     <Button
       buttonStyle={{ backgroundColor: "rgba(0,0,0,0)", padding: 0, margin: 0 }}
@@ -27,12 +27,18 @@ const AppHeader = (props: AppHeaderProps) => {
   );
 
   return (
+    // <AppBar
+    //   style={{ backgroundColor: "black" }}
+    //   title="Scrax System"
+    //   // subtitle="Scrax System"
+    //   leading={leftComponent}
+    //   trailing={rightComponent}
+    // />
     <Header
       backgroundColor="black"
       leftComponent={leftComponent}
-      centerComponent={{ text: "SCRAX SYSTEM", style: { color: "#fff" } }}
+      centerComponent={{ text: "Scrax System", style: { color: "#fff" } }}
       rightComponent={rightComponent}
     />
   );
 };
-export default AppHeader;

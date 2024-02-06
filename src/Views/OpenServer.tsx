@@ -17,6 +17,8 @@ export const OpenServer = (props: OpenServerProps) => {
   const [data, setData] = useState<string>("");
   const [dataObject, setDataObject] = useState<any>({});
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [connectionErrorMessage, setConnectionErrorMessage] =
+    useState<string>("");
 
   useEffect(() => {
     if (!data) {
@@ -25,8 +27,9 @@ export const OpenServer = (props: OpenServerProps) => {
     try {
       const parsedData = JSON.parse(data);
       setDataObject(parsedData);
+      setErrorMessage("");
     } catch (e) {
-      setErrorMessage("Error parsing data");
+      setErrorMessage("Error parsing data" + "\n" + data);
     }
   }, [data]);
 
@@ -48,15 +51,19 @@ export const OpenServer = (props: OpenServerProps) => {
     netManager.onUpdate = (data: string) => {
       setData(data);
     };
+    netManager.onError = (error: string) => {
+      setConnectionErrorMessage(error);
+    };
     console.log("OpenServer", "Connecting to", ip, keyName, key);
     netManager.onUpdate = setData;
-    netManager.connectTo("ws://" + ip, keyName, Buffer.from(key, "base64"));
+    netManager.connectTo("wss://" + ip, keyName, Buffer.from(key, "base64"));
   }, []);
 
   return (
     <>
       <Text h1>{props.server.name}</Text>
       <Text>{errorMessage}</Text>
+      <Text>{connectionErrorMessage}</Text>
       {dataObject &&
         Object.keys(dataObject).map((key) => {
           // Not the best way to handle this, but it works for now

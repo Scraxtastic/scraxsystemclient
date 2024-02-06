@@ -32,6 +32,7 @@ export default class FileManager {
       await FileSystem.makeDirectoryAsync(absolutePath, {
         intermediates: true,
       });
+      console.log("FileManager:", "directory created…");
     }
   }
 

@@ -1,16 +1,18 @@
-import Header from "./src/Header";
-import { SafeAreaProvider } from "react-native-safe-area-context";
+import "react-native-gesture-handler";
+import { StatusBar } from "expo-status-bar";
+import { AppHeader } from "./src/Components/AppHeader";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { BackHandler, View } from "react-native";
+import { ThemeProvider, Text, Overlay, Button, Icon } from "@rneui/themed";
+import { Header } from "react-native-elements";
 import { useEffect, useState } from "react";
 import FileManager from "./src/FileManager/FileManager";
-import { Button, Overlay } from "@rneui/themed";
 import { Server } from "./src/Models/Server";
 import { Buffer } from "buffer";
 import { Servers } from "./src/Views/Servers";
 import { AddServer } from "./src/Views/AddServer";
 import { OpenServer } from "./src/Views/OpenServer";
 import { NetworkManager } from "./src/Network/NetworkManager";
-
 require("./test");
 
 export default function App() {
@@ -55,8 +57,9 @@ export default function App() {
     loadData();
   }, []);
   return (
-    <SafeAreaProvider>
-      <Header
+    <SafeAreaProvider style={{ backgroundColor: "black" }}>
+      <StatusBar style="dark" />
+      <AppHeader
         key="Header"
         onCreate={onCreate}
         onBack={onBack}
