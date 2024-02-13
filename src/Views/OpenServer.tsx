@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { ScrollView, View } from "react-native";
 import { Server } from "../Models/Server";
 import { Text, Button } from "@rneui/themed";
 import { NetworkManager } from "../Network/NetworkManager";
@@ -26,8 +26,15 @@ export const OpenServer = (props: OpenServerProps) => {
     }
     try {
       const parsedData = JSON.parse(data);
-      setDataObject(parsedData);
-      setErrorMessage("");
+      if (
+        parsedData.type === "connectInformation" ||
+        parsedData.type === "connectionInformation"
+      ) {
+        delete parsedData.type;
+        setDataObject({ ...dataObject, ...parsedData });
+        setErrorMessage("");
+        return;
+      }
     } catch (e) {
       setErrorMessage("Error parsing data" + "\n" + data);
     }
@@ -60,32 +67,21 @@ export const OpenServer = (props: OpenServerProps) => {
   }, []);
 
   return (
-    <>
+    <ScrollView>
       <Text h1>{props.server.name}</Text>
-      <Text>{errorMessage}</Text>
-      <Text>{connectionErrorMessage}</Text>
+      {errorMessage && <Text>{errorMessage}</Text>}
+      {connectionErrorMessage && <Text>{connectionErrorMessage}</Text>}
       {dataObject &&
         Object.keys(dataObject).map((key) => {
-          // Not the best way to handle this, but it works for now
-          if (key === "sockets") {
-            const sockets = dataObject[key];
-            return sockets.map((socketData: SocketData) => {
-              return (
-                <SocketDetails
-                  key={key + "-SocketDetails" + "-" + socketData.name}
-                  socketData={socketData}
-                />
-              );
-            });
-          }
           return (
             <DataDetails
               key={key + "-DataDetails"}
               title={key}
+              type={key}
               data={JSON.stringify(dataObject[key])}
             />
           );
         })}
-    </>
+    </ScrollView>
   );
 };

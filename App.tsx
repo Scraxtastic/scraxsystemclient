@@ -13,6 +13,7 @@ import { Servers } from "./src/Views/Servers";
 import { AddServer } from "./src/Views/AddServer";
 import { OpenServer } from "./src/Views/OpenServer";
 import { NetworkManager } from "./src/Network/NetworkManager";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 require("./test");
 
 export default function App() {
@@ -48,10 +49,13 @@ export default function App() {
   });
 
   const loadData = async () => {
-    const serverFileData = await FileManager.ensureInstance().readFile(
-      serverFile
-    );
-    setServers(JSON.parse(serverFileData.toString()));
+    try {
+      const serverFileData = await FileManager.ensureInstance().readFile(
+        serverFile
+      );
+      console.log("Server File Data", serverFileData.toString());
+      setServers(JSON.parse(serverFileData.toString()));
+    } catch (e) {}
   };
   useEffect(() => {
     loadData();

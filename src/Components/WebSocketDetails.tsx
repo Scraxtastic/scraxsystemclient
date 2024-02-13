@@ -3,13 +3,14 @@ import { SocketData } from "../Models/SocketData";
 import { useMemo, useState } from "react";
 import { Buffer } from "buffer";
 import { SocketDetailData } from "./SocketDetailData";
+import { WebsocketData } from "../Models/WebsocketData";
 import { View } from "react-native";
 
-export interface SocketDetailsProps {
-  socketData: SocketData;
+export interface WebSocketDetailsProps {
+  socketData: WebsocketData;
 }
 
-export const SocketDetails = (props: SocketDetailsProps) => {
+export const WebSocketDetails = (props: WebSocketDetailsProps) => {
   const [isExpanded, setExpanded] = useState(false);
   const { socketData } = props;
   //   console.log("SocketDetails", "Rendering", socketData);
@@ -18,20 +19,11 @@ export const SocketDetails = (props: SocketDetailsProps) => {
     return (
       <>
         <Text>ip: {socketData.ip}</Text>
-        <Text>
-          data: {Buffer.from(socketData.data, "base64").toString("utf-8")}
-        </Text>
-        <SocketDetailData
-          key={socketData.name}
-          data={JSON.parse(
-            Buffer.from(socketData.data, "base64").toString("utf-8")
-          )}
-        />
       </>
     );
   };
   return (
-    <View  style={{ marginLeft: 10 }}>
+    <View style={{ marginLeft: 10 }}>
       <Text
         h4
         onPress={() => {
@@ -43,7 +35,6 @@ export const SocketDetails = (props: SocketDetailsProps) => {
           borderWidth: 1,
           marginTop: 10,
           padding: 5,
-          marginLeft: 10,
         }}
       >
         {socketData.name}
