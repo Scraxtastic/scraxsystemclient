@@ -7,6 +7,7 @@ import { Buffer } from "buffer";
 import { DataDetails } from "../Components/DataDetails";
 import { SocketDetails } from "../Components/SocketDetails";
 import { SocketData } from "../Models/SocketData";
+import { ConnectionMessage } from "../Models/ConnectionMessage";
 
 export interface OpenServerProps {
   server: Server;
@@ -20,18 +21,21 @@ export const OpenServer = (props: OpenServerProps) => {
   const [connectionErrorMessage, setConnectionErrorMessage] =
     useState<string>("");
 
+  const onSetData = (data: string) => {
+    console.log("OpenServer", "Data Received", data);
+    setData(data);
+  };
+
   useEffect(() => {
     if (!data) {
       return;
     }
     try {
-      const parsedData = JSON.parse(data);
-      if (
-        parsedData.type === "connectInformation" ||
-        parsedData.type === "connectionInformation"
-      ) {
+      const parsedData: ConnectionMessage = JSON.parse(data);
+      if (parsedData.type === "data") {
         delete parsedData.type;
-        setDataObject({ ...dataObject, ...parsedData });
+        console.log("OpenServer", "Data Parsed", parsedData);
+        setDataObject({ ...dataObject, ...JSON.parse(parsedData.message) });
         setErrorMessage("");
         return;
       }
@@ -56,13 +60,13 @@ export const OpenServer = (props: OpenServerProps) => {
     }
     const netManager = new NetworkManager();
     netManager.onUpdate = (data: string) => {
-      setData(data);
+      onSetData(data);
     };
     netManager.onError = (error: string) => {
       setConnectionErrorMessage(error);
     };
     console.log("OpenServer", "Connecting to", ip, keyName, key);
-    netManager.onUpdate = setData;
+    // netManager.onUpdate = setData;
     netManager.connectTo("wss://" + ip, keyName, Buffer.from(key, "base64"));
   }, []);
 

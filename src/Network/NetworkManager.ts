@@ -2,6 +2,7 @@ import { encryptAndPackageData, unpackageAndDecryptData } from "./cbc";
 import { Buffer } from "buffer";
 import { wrapperKeys } from "./wrapperKeys";
 import CryptoJS from "crypto-js";
+import { LoginData } from "../Models/LoginData";
 
 export class NetworkManager {
   static instance: NetworkManager = null;
@@ -128,7 +129,12 @@ export class NetworkManager {
       this.isConnected = true;
       // console.log("WClient:", "Connected to server.");
       this.onUpdate("Connected to server.");
-      this.sendEncryptedMessage(socket, Buffer.from(name), key);
+      const loginData: LoginData = { name: name, type: "receiver" };
+      this.sendEncryptedMessage(
+        socket,
+        Buffer.from(JSON.stringify(loginData)),
+        key
+      );
     };
     // socket.on("error", (err) => {
     //   console.log("WClient:", "Socket error:", err.name, err.message);

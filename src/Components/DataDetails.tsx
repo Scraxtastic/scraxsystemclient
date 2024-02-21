@@ -18,8 +18,10 @@ export const DataDetails = (props: DataDetailsProps) => {
 
   const renderData = () => {
     if (type.toLowerCase() === "sockets") {
+      console.log("DataDetails", "renderData", "Sockets");
       const sockets: SocketData[] = JSON.parse(data);
       return sockets.map((socketData: SocketData) => {
+        console.log("socketDAta", socketData);
         return (
           <SocketDetails
             key={type + "-SocketDetails" + "-" + socketData.name}
@@ -28,94 +30,8 @@ export const DataDetails = (props: DataDetailsProps) => {
         );
       });
     }
-    if (type.toLowerCase() === "socketconnections") {
-      const socketConnectionsData: SocketConnectionData[] = JSON.parse(data);
-      const elements: React.JSX.Element[] = [];
-      elements.push(
-        ...socketConnectionsData
-          .filter(
-            (socketConnectionData: SocketConnectionData) =>
-              socketConnectionData.connected > 0
-          )
-          .map((socketConnectionData: SocketConnectionData) => {
-            return (
-              <SocketConnectionDetails
-                key={
-                  type +
-                  "-SocketConnectionDetails" +
-                  "-" +
-                  socketConnectionData.ip
-                }
-                socketConnectionData={socketConnectionData}
-              />
-            );
-          })
-      );
-      const failedToConnectIPs: SocketConnectionData[] = socketConnectionsData
-        .filter(
-          (socketConnectionData: SocketConnectionData) =>
-            socketConnectionData.connected <= 0
-        )
-        .sort((a, b) => {
-          if (a.names.length > 0 && b.names.length > 0) {
-            return a.lastConnectionTime - b.lastConnectionTime;
-          } else if (a.names.length > 0) {
-            return -1;
-          } else if (b.names.length > 0) {
-            return 1;
-          }
-          return a.lastConnectionTime - b.lastConnectionTime;
-        });
-      if (failedToConnectIPs.length > 0) {
-        elements.push(
-          <View style={{ marginLeft: 5 }}>
-            <Text h4>Failed to connect IPS</Text>
-            {failedToConnectIPs.map(
-              (socketConnectionData: SocketConnectionData) => {
-                return (
-                  <View
-                    style={{
-                      marginLeft: 5,
-                      borderColor: "black",
-                      borderStyle: "solid",
-                      borderWidth: 1,
-                    }}
-                  >
-                    {Object.keys(socketConnectionData).map((key) => {
-                      return (
-                        <Text key={key}>
-                          {key}: {socketConnectionData[key]}
-                        </Text>
-                      );
-                    })}
-                  </View>
-                );
-              }
-            )}
-          </View>
-        );
-        return elements;
-      }
-    }
-    if (type.toLowerCase() === "websockets") {
-      const websockets: SocketData[] = JSON.parse(data);
-      return websockets.map((websocketData: SocketData) => {
-        return (
-          <WebSocketDetails
-            key={
-              type +
-              "-WebSocketDetails" +
-              "-" +
-              websocketData.ip +
-              "-" +
-              websocketData.port
-            }
-            socketData={websocketData}
-          />
-        );
-      });
-    }
-    if (type.toLowerCase() === "websocketconnections") {
+    if (type.toLowerCase() === "connections") {
+      console.log("DataDetails", "renderData", "WebSocketConnections");
       const websocketConnectionsData: SocketConnectionData[] = JSON.parse(data);
       return websocketConnectionsData.map(
         (websocketConnectionData: SocketConnectionData) => {

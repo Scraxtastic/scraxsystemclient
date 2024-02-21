@@ -12,26 +12,21 @@ export interface SocketDetailsProps {
 export const SocketDetails = (props: SocketDetailsProps) => {
   const [isExpanded, setExpanded] = useState(false);
   const { socketData } = props;
-  //   console.log("SocketDetails", "Rendering", socketData);
+  console.log("SocketDetails", "Rendering", socketData);
 
   const renderData = () => {
     return (
       <>
         <Text>ip: {socketData.ip}</Text>
-        <Text>
-          data: {Buffer.from(socketData.data, "base64").toString("utf-8")}
-        </Text>
-        <SocketDetailData
-          key={socketData.name}
-          data={JSON.parse(
-            Buffer.from(socketData.data, "base64").toString("utf-8")
-          )}
-        />
+
+        <Text>data: {socketData.data}</Text>
+
+        {/* <SocketDetailData key={socketData.name} data={socketData.data} /> */}
       </>
     );
   };
   return (
-    <View  style={{ marginLeft: 10 }}>
+    <View style={{ marginLeft: 10 }}>
       <Text
         h4
         onPress={() => {
