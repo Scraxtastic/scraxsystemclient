@@ -22,7 +22,7 @@ export const OpenServer = (props: OpenServerProps) => {
     useState<string>("");
 
   const onSetData = (data: string) => {
-    console.log("OpenServer", "Data Received", data);
+    // console.log("OpenServer", "Data Received", data);
     setData(data);
   };
 
@@ -34,7 +34,7 @@ export const OpenServer = (props: OpenServerProps) => {
       const parsedData: ConnectionMessage = JSON.parse(data);
       if (parsedData.type === "data") {
         delete parsedData.type;
-        console.log("OpenServer", "Data Parsed", parsedData);
+        // console.log("OpenServer", "Data Parsed", parsedData);
         setDataObject({ ...dataObject, ...JSON.parse(parsedData.message) });
         setErrorMessage("");
         return;
@@ -65,7 +65,7 @@ export const OpenServer = (props: OpenServerProps) => {
     netManager.onError = (error: string) => {
       setConnectionErrorMessage(error);
     };
-    console.log("OpenServer", "Connecting to", ip, keyName, key);
+    // console.log("OpenServer", "Connecting to", ip, keyName, key);
     // netManager.onUpdate = setData;
     netManager.connectTo("wss://" + ip, keyName, Buffer.from(key, "base64"));
   }, []);
@@ -76,16 +76,23 @@ export const OpenServer = (props: OpenServerProps) => {
       {errorMessage && <Text>{errorMessage}</Text>}
       {connectionErrorMessage && <Text>{connectionErrorMessage}</Text>}
       {dataObject &&
-        Object.keys(dataObject).map((key) => {
-          return (
-            <DataDetails
-              key={key + "-DataDetails"}
-              title={key}
-              type={key}
-              data={JSON.stringify(dataObject[key])}
-            />
-          );
-        })}
+        Object.keys(dataObject)
+          .filter((key) => {
+            if (key === "type") {
+              return false;
+            }
+            return true;
+          })
+          .map((key) => {
+            return (
+              <DataDetails
+                key={key + "-DataDetails"}
+                title={key}
+                type={key}
+                data={JSON.stringify(dataObject[key])}
+              />
+            );
+          })}
     </ScrollView>
   );
 };

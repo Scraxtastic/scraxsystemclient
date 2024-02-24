@@ -18,10 +18,10 @@ export const DataDetails = (props: DataDetailsProps) => {
 
   const renderData = () => {
     if (type.toLowerCase() === "sockets") {
-      console.log("DataDetails", "renderData", "Sockets");
+      // console.log("DataDetails", "renderData", "Sockets");
       const sockets: SocketData[] = JSON.parse(data);
       return sockets.map((socketData: SocketData) => {
-        console.log("socketDAta", socketData);
+        // console.log("socketDAta", socketData);
         return (
           <SocketDetails
             key={type + "-SocketDetails" + "-" + socketData.name}
@@ -31,7 +31,7 @@ export const DataDetails = (props: DataDetailsProps) => {
       });
     }
     if (type.toLowerCase() === "connections") {
-      console.log("DataDetails", "renderData", "WebSocketConnections");
+      // console.log("DataDetails", "renderData", "WebSocketConnections");
       const websocketConnectionsData: SocketConnectionData[] = JSON.parse(data);
       return websocketConnectionsData.map(
         (websocketConnectionData: SocketConnectionData) => {
@@ -51,8 +51,9 @@ export const DataDetails = (props: DataDetailsProps) => {
         }
       );
     }
-    console.log("DataDetails", "renderData", "Unknown type", type);
-    return <Text>{props.data}</Text>;
+    // console.log("DataDetails", "renderData", "Unknown type", type);
+    // return <Text>{props.data}</Text>;
+    return <></>;
   };
 
   return (

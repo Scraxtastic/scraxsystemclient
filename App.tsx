@@ -53,7 +53,6 @@ export default function App() {
       const serverFileData = await FileManager.ensureInstance().readFile(
         serverFile
       );
-      console.log("Server File Data", serverFileData.toString());
       setServers(JSON.parse(serverFileData.toString()));
     } catch (e) {}
   };
@@ -62,7 +61,6 @@ export default function App() {
   }, []);
   return (
     <SafeAreaProvider style={{ backgroundColor: "black" }}>
-      <StatusBar style="dark" />
       <AppHeader
         key="Header"
         onCreate={onCreate}
@@ -105,6 +103,8 @@ export default function App() {
           />
         </View>
       )}
+
+      <StatusBar style="light" hidden={false} />
     </SafeAreaProvider>
   );
 }
