@@ -23,7 +23,6 @@ export default function App() {
   const [isCreating, setCreating] = useState(false);
   const [openServer, setOpenServer] = useState<Server>(null);
   const onServerUpdated = async (servers: Server[]) => {
-    // console.log("Updated Servers", servers);
     await FileManager.ensureInstance().saveFile(
       serverFile,
       Buffer.from(JSON.stringify(servers))

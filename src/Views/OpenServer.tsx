@@ -23,7 +23,6 @@ export const OpenServer = (props: OpenServerProps) => {
   const [netManager, setNetManager] = useState<NetworkManager>(null);
 
   const onSetData = (data: string) => {
-    // console.log("OpenServer", "Data Received", data);
     setData(data);
   };
 
@@ -35,7 +34,6 @@ export const OpenServer = (props: OpenServerProps) => {
       const parsedData: ConnectionMessage = JSON.parse(data);
       if (parsedData.type === "data") {
         delete parsedData.type;
-        // console.log("OpenServer", "Data Parsed", parsedData);
         setDataObject({ ...dataObject, ...JSON.parse(parsedData.message) });
         setErrorMessage("");
         return;
@@ -75,24 +73,17 @@ export const OpenServer = (props: OpenServerProps) => {
           if (foundMod.length > 0) {
             prevModData = prevModData.map((mod) => {
               if (mod.origin === modMessage.origin) {
-                // console.log(
-                //   `Found and adding text ${modMessage.message} to ${mod.message}`
-                // );
                 mod.message += modMessage.message;
-                // console.log("changed to", mod.message);
               }
               return mod;
             });
           } else {
-            // console.log("Adding new mod", modMessage);
             prevModData = [...prevModData, modMessage];
           }
         }
         return prevModData;
       });
     };
-    // console.log("OpenServer", "Connecting to", ip, keyName, key);
-    // netManager.onUpdate = setData;
     netManager.connectTo("wss://" + ip, keyName, Buffer.from(key, "base64"));
     setNetManager(netManager);
   }, []);
@@ -120,7 +111,6 @@ export const OpenServer = (props: OpenServerProps) => {
                 data={JSON.stringify(dataObject[key])}
                 modData={modData}
                 sendModMessage={(modMessage: ModMessage) => {
-                  console.log("Sending", modMessage, "to server");
                   netManager.sendEncryptedMessage(
                     netManager.socket,
                     Buffer.from(JSON.stringify(modMessage)),

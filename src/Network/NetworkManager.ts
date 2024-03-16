@@ -23,29 +23,20 @@ export class NetworkManager {
   private ip: string;
   private name: string;
   constructor() {
-    // console.log("Constructing NetworkManager…");
     if (!!NetworkManager.instance) {
-      // console.log("NetworkManager:", "Instance already exists, returning…");
-      // console.log(NetworkManager);
-      // console.log(NetworkManager.instance);
       if (!!NetworkManager.instance.socket) {
         NetworkManager.instance.socket.close();
       }
     }
     NetworkManager.instance = this;
-    // console.log("NetworkManager:", "Instance created.");
   }
 
   connectTo = (ip: string, name: string, key: Buffer) => {
-    // console.log("WClient:", "connecting to ", ip, name);
-    // console.log("WClient:", "WebSocket", WebSocket);
-    // console.log("WClient:", "Buffer", Buffer.toString());
     this.ip = ip;
     this.name = name;
     const socket = new WebSocket(ip);
     this.socket = socket;
     socket.binaryType = "blob";
-    // console.log("WClient:", "Socket created.");
     this.isConnecting = true;
     this.handleConnection(socket, key, name);
   };
@@ -72,7 +63,6 @@ export class NetworkManager {
   };
 
   handleConnection = (socket: WebSocket, key: Buffer, name: string) => {
-    // console.log("WClient", "Handling connection…");
     socket.onmessage = async (e) => {
       if (e.data instanceof Blob) {
         const reader = new FileReader();
@@ -149,7 +139,6 @@ export class NetworkManager {
     socket.onopen = () => {
       this.isConnecting = false;
       this.isConnected = true;
-      // console.log("WClient:", "Connected to server.");
       this.onUpdate("Connected to server.");
       const loginData: LoginData = { name: name, type: "receiver" };
       this.sendEncryptedMessage(
@@ -158,24 +147,5 @@ export class NetworkManager {
         key
       );
     };
-    // socket.on("error", (err) => {
-    //   console.log("WClient:", "Socket error:", err.name, err.message);
-    // });
-    // socket.on("unexpected-response", (req, res) => {
-    //   console.log("WClient:", "Unexpected response:", res);
-    // });
-
-    // socket.on("message", async (data: Buffer) => {
-    //   const decrypted = await unpackageAndDecryptData(data, key);
-    //   this.data = decrypted.toString();
-    //   this.onUpdate(this.data);
-    //   console.log("WClient:", "Received data:", decrypted.toString());
-    // });
-
-    // socket.on("close", () => {
-    //   this.isConnected = false;
-    //   this.isConnecting = false;
-    //   console.log("WClient:", "Socket closed.");
-    // });
   };
 }
