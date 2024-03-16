@@ -5,9 +5,8 @@ import { NetworkManager } from "../Network/NetworkManager";
 import { useEffect, useMemo, useState } from "react";
 import { Buffer } from "buffer";
 import { DataDetails } from "../Components/DataDetails";
-import { SocketDetails } from "../Components/SocketDetails";
-import { SocketData } from "../Models/SocketData";
 import { ConnectionMessage } from "../Models/ConnectionMessage";
+import { ModMessage } from "../Models/ModMessage";
 
 export interface OpenServerProps {
   server: Server;
@@ -16,10 +15,12 @@ export interface OpenServerProps {
 
 export const OpenServer = (props: OpenServerProps) => {
   const [data, setData] = useState<string>("");
+  const [modData, setModData] = useState<ModMessage[]>([]);
   const [dataObject, setDataObject] = useState<any>({});
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [connectionErrorMessage, setConnectionErrorMessage] =
     useState<string>("");
+  const [netManager, setNetManager] = useState<NetworkManager>(null);
 
   const onSetData = (data: string) => {
     // console.log("OpenServer", "Data Received", data);
@@ -65,9 +66,35 @@ export const OpenServer = (props: OpenServerProps) => {
     netManager.onError = (error: string) => {
       setConnectionErrorMessage(error);
     };
+    netManager.onModUpdate = (modMessages: ModMessage[]) => {
+      setModData((prevModData) => {
+        for (let modMessage of modMessages) {
+          const foundMod = prevModData.filter(
+            (mod) => mod.origin === modMessage.origin
+          );
+          if (foundMod.length > 0) {
+            prevModData = prevModData.map((mod) => {
+              if (mod.origin === modMessage.origin) {
+                // console.log(
+                //   `Found and adding text ${modMessage.message} to ${mod.message}`
+                // );
+                mod.message += modMessage.message;
+                // console.log("changed to", mod.message);
+              }
+              return mod;
+            });
+          } else {
+            // console.log("Adding new mod", modMessage);
+            prevModData = [...prevModData, modMessage];
+          }
+        }
+        return prevModData;
+      });
+    };
     // console.log("OpenServer", "Connecting to", ip, keyName, key);
     // netManager.onUpdate = setData;
     netManager.connectTo("wss://" + ip, keyName, Buffer.from(key, "base64"));
+    setNetManager(netManager);
   }, []);
 
   return (
@@ -87,9 +114,19 @@ export const OpenServer = (props: OpenServerProps) => {
             return (
               <DataDetails
                 key={key + "-DataDetails"}
+                keyName={props.server.keyName}
                 title={key}
                 type={key}
                 data={JSON.stringify(dataObject[key])}
+                modData={modData}
+                sendModMessage={(modMessage: ModMessage) => {
+                  console.log("Sending", modMessage, "to server");
+                  netManager.sendEncryptedMessage(
+                    netManager.socket,
+                    Buffer.from(JSON.stringify(modMessage)),
+                    Buffer.from(props.server.key, "base64")
+                  );
+                }}
               />
             );
           })}

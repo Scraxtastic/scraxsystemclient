@@ -3,16 +3,21 @@ import { Buffer } from "buffer";
 import { wrapperKeys } from "./wrapperKeys";
 import CryptoJS from "crypto-js";
 import { LoginData } from "../Models/LoginData";
+import { ModMessage } from "../Models/ModMessage";
 
 export class NetworkManager {
   static instance: NetworkManager = null;
 
-  private socket: WebSocket;
+  public socket: WebSocket;
   public data: string;
   public isConnected: boolean;
   public isConnecting: boolean;
   public isVerified: boolean;
   public onUpdate: (data: string) => void;
+  public onModUpdate: (data: ModMessage[]) => void;
+  private currentModUpdates: ModMessage[] = [];
+  private lastModUpdateSendTime: number = 0;
+  private currentOrigin: string;
   public onError: (error: string) => void;
   private lastData: string = "";
   private ip: string;
@@ -38,6 +43,7 @@ export class NetworkManager {
     this.ip = ip;
     this.name = name;
     const socket = new WebSocket(ip);
+    this.socket = socket;
     socket.binaryType = "blob";
     // console.log("WClient:", "Socket created.");
     this.isConnecting = true;
@@ -93,7 +99,18 @@ export class NetworkManager {
             decryptedData.toString("utf-8"),
             "base64"
           ).toString("utf-8");
-          this.onUpdate(this.lastData);
+          const modMessage: ModMessage = JSON.parse(this.lastData);
+          if (modMessage.type === "mod") {
+            this.currentOrigin = modMessage.origin;
+            this.currentModUpdates = [...this.currentModUpdates, modMessage];
+            if (this.lastModUpdateSendTime + 1000 < Date.now()) {
+              this.lastModUpdateSendTime = Date.now();
+              this.onModUpdate(this.currentModUpdates);
+              this.currentModUpdates = [];
+            }
+          } else {
+            this.onUpdate(this.lastData);
+          }
         };
         reader.onerror = (e) => {
           console.error("Error reading blob:", e);
@@ -103,6 +120,11 @@ export class NetworkManager {
       } else {
         // Handle non-blob data
         // console.log("Received data:", e.data);
+      }
+
+      if (this.currentModUpdates.length > 0) {
+        this.onModUpdate(this.currentModUpdates);
+        this.currentModUpdates = [];
       }
     };
     socket.onclose = (e) => {
