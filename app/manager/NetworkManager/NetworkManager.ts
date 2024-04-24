@@ -2,34 +2,34 @@ import { encryptAndPackageData, unpackageAndDecryptData } from "./cbc";
 import { Buffer } from "buffer";
 import { wrapperKeys } from "./wrapperKeys";
 import CryptoJS from "crypto-js";
-import { LoginData } from "../Models/LoginData";
-import { ModMessage } from "../Models/ModMessage";
+import { LoginData } from "../../models/Network/LoginData";
+import { ModMessage } from "../../models/Network/mods/ModMessage";
 
 export class NetworkManager {
-  static instance: NetworkManager = null;
+  private static instance: NetworkManager = null;
 
   public socket: WebSocket;
   public data: string;
   public isConnected: boolean;
   public isConnecting: boolean;
   public isVerified: boolean;
+  public onConnect: (data: string) => void;
   public onUpdate: (data: string) => void;
   public onModUpdate: (data: ModMessage[]) => void;
   private currentModUpdates: ModMessage[] = [];
   private lastModUpdateSendTime: number = 0;
-  private currentOrigin: string;
   public onError: (error: string) => void;
   private lastData: string = "";
   private ip: string;
   private name: string;
-  constructor() {
-    if (!!NetworkManager.instance) {
-      if (!!NetworkManager.instance.socket) {
-        NetworkManager.instance.socket.close();
-      }
+  constructor() {}
+
+  public static getInstance = (): NetworkManager => {
+    if (!NetworkManager.instance) {
+      NetworkManager.instance = new NetworkManager();
     }
-    NetworkManager.instance = this;
-  }
+    return NetworkManager.instance;
+  };
 
   connectTo = (ip: string, name: string, key: Buffer) => {
     this.ip = ip;
@@ -93,7 +93,6 @@ export class NetworkManager {
           ).toString("utf-8");
           const modMessage: ModMessage = JSON.parse(this.lastData);
           if (modMessage.type === "mod") {
-            this.currentOrigin = modMessage.origin;
             this.currentModUpdates = [...this.currentModUpdates, modMessage];
             if (this.lastModUpdateSendTime + 1000 < Date.now()) {
               this.lastModUpdateSendTime = Date.now();
@@ -106,7 +105,6 @@ export class NetworkManager {
         };
         reader.onerror = (e) => {
           console.error("Error reading blob:", e);
-          this.onUpdate("Error reading blob." + "\n" + this.lastData);
         };
         reader.readAsArrayBuffer(e.data); // Read the blob as an ArrayBuffer
       } else {
@@ -141,7 +139,7 @@ export class NetworkManager {
     socket.onopen = () => {
       this.isConnecting = false;
       this.isConnected = true;
-      this.onUpdate("Connected to server.");
+      this.onConnect("Connected to server.");
       const loginData: LoginData = { name: name, type: "receiver" };
       this.sendEncryptedMessage(
         socket,

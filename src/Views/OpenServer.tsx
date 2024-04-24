@@ -1,5 +1,5 @@
 import { ScrollView, View } from "react-native";
-import { Server } from "../Models/Server";
+import { ServerProps } from "../../app/models/ServerProps";
 import { Text, Button } from "@rneui/themed";
 import { NetworkManager } from "../Network/NetworkManager";
 import { useEffect, useMemo, useState } from "react";
@@ -9,7 +9,7 @@ import { ConnectionMessage } from "../Models/ConnectionMessage";
 import { ModMessage } from "../Models/ModMessage";
 
 export interface OpenServerProps {
-  server: Server;
+  server: ServerProps;
   onClosed: () => void;
 }
 
@@ -84,7 +84,11 @@ export const OpenServer = (props: OpenServerProps) => {
         return prevModData;
       });
     };
-    netManager.connectTo("wss://" + ip, keyName, Buffer.from(key, "base64"));
+    if (ip.includes("localhost")) {
+      netManager.connectTo("ws://" + ip, keyName, Buffer.from(key, "base64"));
+    } else {
+      netManager.connectTo("wss://" + ip, keyName, Buffer.from(key, "base64"));
+    }
     setNetManager(netManager);
   }, []);
 

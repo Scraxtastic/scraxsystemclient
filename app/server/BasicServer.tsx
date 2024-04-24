@@ -1,5 +1,5 @@
 import { Button, Card, Input, Text } from "@rneui/themed";
-import { ServerProps } from "../../../app/models/ServerProps";
+import { ServerProps } from "../models/ServerProps";
 import { useState } from "react";
 
 export interface AddServerProps {

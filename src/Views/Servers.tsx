@@ -1,13 +1,13 @@
 import { Button, Icon, Overlay, Text } from "@rneui/themed";
-import { Server } from "../Models/Server";
+import { ServerProps } from "../../app/models/ServerProps";
 import { ScrollView, View } from "react-native";
 import { useState } from "react";
 import { EditServer } from "./EditServer";
 
 export interface ServersProps {
-  servers: Server[];
-  onUpdatedServer: (servers: Server[]) => void;
-  onOpenServer: (server: Server) => void;
+  servers: ServerProps[];
+  onUpdatedServer: (servers: ServerProps[]) => void;
+  onOpenServer: (server: ServerProps) => void;
 }
 
 export const Servers = (props: ServersProps) => {
@@ -15,7 +15,7 @@ export const Servers = (props: ServersProps) => {
   const [editingServerIndex, setEditingServerIndex] = useState<number>(-1);
   return (
     <ScrollView>
-      {props.servers.map((server: Server, index: number) => {
+      {props.servers.map((server: ServerProps, index: number) => {
         const key = server.name + "-" + server.ip;
         return (
           <View
@@ -64,7 +64,7 @@ export const Servers = (props: ServersProps) => {
       >
         <EditServer
           server={props.servers[editingServerIndex]}
-          onUpdated={(server: Server) => {
+          onUpdated={(server: ServerProps) => {
             const servers = [...props.servers];
             servers[editingServerIndex] = server;
             props.onUpdatedServer(servers);

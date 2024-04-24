@@ -1,15 +1,15 @@
 import { Button, Card, Input, Text } from "@rneui/themed";
-import { Server } from "../Models/Server";
+import { ServerProps } from "../../app/models/ServerProps";
 import { useState } from "react";
 import { BasicServer } from "./Basics/BasicServer";
 
 export interface EditServerProps {
-  server: Server;
-  onUpdated: (server: Server) => void;
+  server: ServerProps;
+  onUpdated: (server: ServerProps) => void;
   onCancel: () => void;
 }
 export const EditServer = (props: EditServerProps) => {
-  const [server, setServer] = useState<Server>(props.server);
+  const [server, setServer] = useState<ServerProps>(props.server);
   const handleCreate = () => {
     props.onUpdated(server);
   };

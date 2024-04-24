@@ -1,21 +1,24 @@
 import { Button, Card, Input, Text } from "@rneui/themed";
-import { ServerProps } from "../../app/models/ServerProps";
+import { ServerProps } from "../models/ServerProps";
 import { useState } from "react";
-import { BasicServer } from "./Basics/BasicServer";
+import { BasicServer } from "./BasicServer";
 
 export interface AddServerProps {
-  onCreated: (server: ServerProps) => void;
+  isEditing: boolean;
+  onSuccess: (server: ServerProps) => void;
   onCancel: () => void;
 }
 export const AddServer = (props: AddServerProps) => {
   const [server, setServer] = useState<ServerProps>({
+    id: 0,
     name: "",
     ip: "",
     key: "",
     keyName: "",
   });
+  const successText = props.isEditing ? "Update" : "Add";
   const handleCreate = () => {
-    props.onCreated(server);
+    props.onSuccess(server);
   };
   return (
     <Card containerStyle={{ padding: 20, width: 300 }}>
@@ -25,7 +28,7 @@ export const AddServer = (props: AddServerProps) => {
         onUpdatedServer={setServer}
       />
       <Card.Divider />
-      <Button onPress={handleCreate}>Add Server</Button>
+      <Button onPress={handleCreate}>{successText}</Button>
       <Card.Divider />
       <Button color={"warning"} onPress={props.onCancel}>
         Cancel

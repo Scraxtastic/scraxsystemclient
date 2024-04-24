@@ -23,6 +23,7 @@ export const DataDetails = (props: DataDetailsProps) => {
   const renderData = () => {
     if (type.toLowerCase() === "sockets") {
       const sockets: any[] = JSON.parse(data);
+      console.log("Sockets: ", sockets);
       const socketData: SocketData[] = sockets.map((socketData: any) => {
         if (
           socketData.data === undefined ||
