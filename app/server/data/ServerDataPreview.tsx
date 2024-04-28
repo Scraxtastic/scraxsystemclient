@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import { Button } from "@react-native-material/core";
+import { Button, Text } from "@react-native-material/core";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { SocketData } from "../../models/Network/SocketData";
@@ -21,7 +21,9 @@ export const ServerDataPreview = (props: ServerDataPreviewProps) => {
           console.log("ServerDataPreview:", "onPress", props);
           router.navigate("server/data/ServerDataView");
         }}
-      ></Button>
+      >
+        <Text>test</Text>
+      </Button>
     </View>
   );
 };

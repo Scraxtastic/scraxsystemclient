@@ -5,3 +5,12 @@ export interface ServerProps {
   keyName: string;
   key: string;
 }
+
+export const createEmptyServerProps = () => {
+  return {
+    ip: "",
+    key: "",
+    keyName: "",
+    name: "",
+  };
+};

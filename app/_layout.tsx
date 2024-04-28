@@ -1,10 +1,19 @@
-import { Link, Stack } from "expo-router";
+import { Button } from "@react-native-material/core";
+import { Link, Stack, router, useNavigation } from "expo-router";
+import { Modal, View } from "react-native";
+import { BasicServer } from "./server/BasicServer";
+import { ServerProps } from "./models/ServerProps";
+import { useState } from "react";
+import { GlobalStore } from "./manager/GlobalStore/GlobalStore";
+
+
 
 export const RootLayout = () => {
   return (
     <Stack
       screenOptions={{
         statusBarStyle: "light",
+        statusBarColor: "black",
         headerTintColor: "rgba(255, 255, 255, 255)",
         headerStyle: { backgroundColor: "black" },
         contentStyle: { backgroundColor: "grey" },
@@ -14,7 +23,18 @@ export const RootLayout = () => {
         name="index"
         options={{
           headerRight(props) {
-            return <Link href={"index"}>Add</Link>;
+            return (
+              <View>
+                <Button
+                  color="rgb(70, 70, 70)"
+                  tintColor="white"
+                  title="Add"
+                  onPress={() => {
+                    GlobalStore.getInstance().setShallCreateServer(true);
+                  }}
+                />
+              </View>
+            );
           },
         }}
       />

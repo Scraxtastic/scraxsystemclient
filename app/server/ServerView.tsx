@@ -8,7 +8,7 @@ import { ModMessage } from "../models/Network/mods/ModMessage";
 import { Buffer } from "buffer";
 import { BasicData } from "../models/Network/BasicData/BasicData";
 import { ServerDataPreview } from "./data/ServerDataPreview";
-import { useNavigation } from "expo-router";
+import { useNavigation, useRouter } from "expo-router";
 import { ConnectionMessage } from "../models/Network/ConnectionMessage";
 import { MessageData } from "../models/Network/MessageData";
 import { SocketData } from "../models/Network/SocketData";
@@ -17,6 +17,7 @@ const ServerView = () => {
   const [server, setServer] = useState<ServerProps>();
   const [serverData, setServerData] = useState<SocketData[]>([]);
   const navigation = useNavigation();
+  const router = useRouter();
 
   useEffect(() => {
     const networkManager: NetworkManager = NetworkManager.getInstance();
@@ -41,7 +42,10 @@ const ServerView = () => {
       const data: ConnectionMessage = JSON.parse(dataText);
       if (data.type === "data") {
         const messageData: MessageData = JSON.parse(data.message);
-        const updatedServerData: SocketData[] = [...serverData, ...messageData.sockets];
+        const updatedServerData: SocketData[] = [
+          ...serverData,
+          ...messageData.sockets,
+        ];
         const activeServerDataSets: SocketData[] = updatedServerData.filter(
           (data) => data.name === activeServer?.name
         );
@@ -58,18 +62,23 @@ const ServerView = () => {
       console.log("ServerView:", "onError", error);
     };
     const { ip, key, keyName } = server;
-    if (server.ip.includes("localhost")) {
-      networkManager.connectTo(
-        "ws://" + ip,
-        keyName,
-        Buffer.from(key, "base64")
-      );
-    } else {
-      networkManager.connectTo(
-        "wss://" + ip,
-        keyName,
-        Buffer.from(key, "base64")
-      );
+    try {
+      if (server.ip.includes("localhost")) {
+        networkManager.connectTo(
+          "ws://" + ip,
+          keyName,
+          Buffer.from(key, "base64")
+        );
+      } else {
+        networkManager.connectTo(
+          "wss://" + ip,
+          keyName,
+          Buffer.from(key, "base64")
+        );
+      }
+    } catch (e) {
+      console.warn("ServerView:", "Error connecting to server", e);
+      router.back();
     }
     setServer(server);
   }, []);

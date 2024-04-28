@@ -4,20 +4,15 @@ import { useState } from "react";
 import { BasicServer } from "./BasicServer";
 
 export interface AddServerProps {
+  server: ServerProps;
   isEditing: boolean;
   onSuccess: (server: ServerProps) => void;
   onCancel: () => void;
 }
-export const AddServer = (props: AddServerProps) => {
-  const [server, setServer] = useState<ServerProps>({
-    id: 0,
-    name: "",
-    ip: "",
-    key: "",
-    keyName: "",
-  });
+export const ServerForm = (props: AddServerProps) => {
+  const [server, setServer] = useState<ServerProps>({ ...props.server });
   const successText = props.isEditing ? "Update" : "Add";
-  const handleCreate = () => {
+  const handleSuccess = () => {
     props.onSuccess(server);
   };
   return (
@@ -28,7 +23,7 @@ export const AddServer = (props: AddServerProps) => {
         onUpdatedServer={setServer}
       />
       <Card.Divider />
-      <Button onPress={handleCreate}>{successText}</Button>
+      <Button onPress={handleSuccess}>{successText}</Button>
       <Card.Divider />
       <Button color={"warning"} onPress={props.onCancel}>
         Cancel

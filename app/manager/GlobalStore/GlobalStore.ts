@@ -8,12 +8,18 @@ export class GlobalStore {
   private activeServer: ServerProps | null = null;
   private activeServerData: SocketData | null = null;
   public onActiveServerDataUpdate: (data: SocketData) => void;
+  //Creation
+  public shallCreateServer: boolean = false;
+  public onShallCreateServer: (shallCreate: boolean) => void;
   private constructor() {}
   public static getInstance(): GlobalStore {
     if (!GlobalStore.instance) {
       GlobalStore.instance = new GlobalStore();
     }
     return GlobalStore.instance;
+  }
+  public clearServers() {
+    this.servers = [];
   }
   public getServers(): ServerProps[] {
     return this.servers;
@@ -44,5 +50,13 @@ export class GlobalStore {
   }
   public getActiveServerData() {
     return this.activeServerData;
+  }
+  //Creation
+  public setShallCreateServer(shallCreate: boolean) {
+    this.onShallCreateServer(shallCreate);
+    this.shallCreateServer = shallCreate;
+  }
+  public getShallCreateServer() {
+    return this.shallCreateServer;
   }
 }
