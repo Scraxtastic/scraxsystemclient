@@ -6,13 +6,16 @@ import { GlobalStore } from "../manager/GlobalStore/GlobalStore";
 import { NetworkManager } from "../manager/NetworkManager/NetworkManager";
 import { ModMessage } from "../models/Network/mods/ModMessage";
 import { Buffer } from "buffer";
-import { BasicData } from "../models/Network/basicData/BasicData";
+import { BasicData } from "../models/Network/BasicData/BasicData";
 import { ServerDataPreview } from "./data/ServerDataPreview";
 import { useNavigation } from "expo-router";
+import { ConnectionMessage } from "../models/Network/ConnectionMessage";
+import { MessageData } from "../models/Network/MessageData";
+import { SocketData } from "../models/Network/SocketData";
 
 const ServerView = () => {
   const [server, setServer] = useState<ServerProps>();
-  const [serverData, setServerData] = useState<BasicData[]>([]);
+  const [serverData, setServerData] = useState<SocketData[]>([]);
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -35,19 +38,18 @@ const ServerView = () => {
       console.log("ServerView:", "onUpdate", serverData, serverData.map);
       const globalStore = GlobalStore.getInstance();
       const activeServer = globalStore.getActiveServer();
-      const updatedServerData = [
-        ...serverData,
-        ...JSON.parse(JSON.parse(dataText).message).sockets.map(
-          (data: any) => data.data
-        ),
-      ];
-      const activeServerDataSets = updatedServerData.filter(
-        (data) => data.name === activeServer?.name
-      );
-      if (activeServerDataSets.length > 0) {
-        globalStore.setActiveServerData(activeServerDataSets[0]);
+      const data: ConnectionMessage = JSON.parse(dataText);
+      if (data.type === "data") {
+        const messageData: MessageData = JSON.parse(data.message);
+        const updatedServerData: SocketData[] = [...serverData, ...messageData.sockets];
+        const activeServerDataSets: SocketData[] = updatedServerData.filter(
+          (data) => data.name === activeServer?.name
+        );
+        if (activeServerDataSets.length > 0) {
+          globalStore.setActiveServerData(activeServerDataSets[0]);
+        }
+        setServerData(updatedServerData);
       }
-      setServerData(updatedServerData);
     };
     networkManager.onModUpdate = (data: ModMessage[]) => {
       console.log("ServerView:", "onModUpdate", data);
@@ -73,8 +75,8 @@ const ServerView = () => {
   }, []);
 
   return (
-    <ScrollView key={"ServerView"}>
-      {serverData.map((currentServerData: BasicData) => {
+    <ScrollView key={"ServerView-" + server?.id + "-" + server?.name}>
+      {serverData.map((currentServerData: SocketData) => {
         console.log("ServerView:", "currentServerData", currentServerData);
         return (
           <ServerDataPreview

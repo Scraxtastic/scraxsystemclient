@@ -1,12 +1,13 @@
 import { BasicData } from "../../../src/Models/BasicData";
+import { SocketData } from "../../models/Network/SocketData";
 import { ServerProps } from "../../models/ServerProps";
 
 export class GlobalStore {
   private static instance: GlobalStore;
   private servers: ServerProps[] = [];
   private activeServer: ServerProps | null = null;
-  private activeServerData: BasicData | null = null;
-  public onActiveServerDataUpdate: (data: BasicData) => void;
+  private activeServerData: SocketData | null = null;
+  public onActiveServerDataUpdate: (data: SocketData) => void;
   private constructor() {}
   public static getInstance(): GlobalStore {
     if (!GlobalStore.instance) {
@@ -35,7 +36,7 @@ export class GlobalStore {
   public getActiveServer() {
     return this.activeServer;
   }
-  public setActiveServerData(data: BasicData) {
+  public setActiveServerData(data: SocketData) {
     this.activeServerData = data;
     if (this.onActiveServerDataUpdate !== undefined) {
       this.onActiveServerDataUpdate(data);

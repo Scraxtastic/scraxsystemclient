@@ -1,5 +1,6 @@
 import "react-native-gesture-handler";
-import { Button, View } from "react-native";
+import { View } from "react-native";
+import { Button } from "@react-native-material/core";
 import { useRouter } from "expo-router";
 import FileManager from "./manager/FileManager/FileManager";
 import { useEffect, useState } from "react";
@@ -34,7 +35,7 @@ export default function App() {
     <View>
       {servers?.map((server: ServerProps) => {
         return (
-          <View style={{ marginBottom: 10 }} key={server.ip}>
+          <View style={{ marginTop: 5, marginBottom: 10 }} key={server.ip}>
             <Button
               key={server.ip}
               title={`${server.name} as ${server.keyName}`}

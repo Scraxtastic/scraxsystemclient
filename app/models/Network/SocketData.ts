@@ -1,4 +1,4 @@
-import { BasicData } from "./basicData/BasicData";
+import { BasicData } from "./BasicData/BasicData";
 
 export interface SocketData {
   name: string;
