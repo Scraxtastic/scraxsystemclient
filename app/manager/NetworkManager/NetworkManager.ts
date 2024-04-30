@@ -141,7 +141,7 @@ export class NetworkManager {
       this.isConnected = true;
       this.onConnect("Connected to server.");
       const loginData: LoginData = { name: name, type: "receiver" };
-      console.log("NetworkManager", "send LoginData:", loginData); 
+      console.log("NetworkManager", "send LoginData:", loginData);
       this.sendEncryptedMessage(
         socket,
         Buffer.from(JSON.stringify(loginData)),

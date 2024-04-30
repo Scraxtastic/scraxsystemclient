@@ -34,16 +34,13 @@ export default function App() {
 
   const [servers, setServers] = useState<ServerProps[]>([]);
   const saveData = async () => {
-    console.log("Saving", globalStore.getServers());
     const servers = globalStore.getServers();
     await fileManager.saveFile(
       serverFile,
       Buffer.from(JSON.stringify(servers))
     );
-    console.log("Saved", globalStore.getServers());
   };
   const loadData = async () => {
-    console.log("Loading");
     try {
       const serverFileData = await fileManager.readFile(serverFile);
       const servers = JSON.parse(serverFileData.toString()).map(
@@ -51,7 +48,6 @@ export default function App() {
       );
       globalStore.clearServers();
       globalStore.addServers(servers);
-      console.log("Loaded", servers);
       setServers(servers);
     } catch (e) {
       console.warn("Error loading servers", e);
