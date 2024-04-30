@@ -3,14 +3,15 @@ import { Button, Text } from "@react-native-material/core";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { SocketData } from "../../models/Network/SocketData";
+import { GlobalStore } from "../../manager/GlobalStore/GlobalStore";
 
 export interface ServerDataPreviewProps extends SocketData {}
 
 export const ServerDataPreview = (props: ServerDataPreviewProps) => {
   const [title, setTitle] = useState<string>("");
+  const globalStore = GlobalStore.getInstance();
   const router = useRouter();
   useEffect(() => {
-    console.log("ServerDataPreview:", "useEffect", props);
     setTitle(`${props.name}`);
   });
   return (
@@ -18,12 +19,10 @@ export const ServerDataPreview = (props: ServerDataPreviewProps) => {
       <Button
         title={title}
         onPress={() => {
-          console.log("ServerDataPreview:", "onPress", props);
+          globalStore.setActiveServerData(props);
           router.navigate("server/data/ServerDataView");
         }}
-      >
-        <Text>test</Text>
-      </Button>
+      />
     </View>
   );
 };
