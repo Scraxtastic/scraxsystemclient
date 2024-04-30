@@ -45,7 +45,7 @@ export class NetworkManager {
   closeConnection = () => {
     this.socket?.close();
     this.isConnected = false;
-    console.log("WClient:", "Connection closed.");
+    console.log("NetworkManager:", "Connection closed.");
   };
 
   sendEncryptedMessage = async (
@@ -64,7 +64,7 @@ export class NetworkManager {
   };
 
   handleConnection = (socket: WebSocket, key: Buffer, name: string) => {
-    console.log("handleConnection");
+    console.log("NetworkManager:", "handleConnection");
     socket.onmessage = async (e) => {
       if (e.data instanceof Blob) {
         const reader = new FileReader();
@@ -119,7 +119,7 @@ export class NetworkManager {
     };
     socket.onclose = (e) => {
       console.log(
-        "WClient:",
+        "NetworkManager:",
         "Socket closed:",
         "code:",
         e.code,
@@ -134,13 +134,14 @@ export class NetworkManager {
           this.ip
         }) msg: ${JSON.stringify(e)}`
       );
-      console.log("WClient:", "Socket error:", e);
+      console.log("NetworkManager:", "Socket error:", e);
     };
     socket.onopen = () => {
       this.isConnecting = false;
       this.isConnected = true;
       this.onConnect("Connected to server.");
       const loginData: LoginData = { name: name, type: "receiver" };
+      console.log("NetworkManager", "send LoginData:", loginData); 
       this.sendEncryptedMessage(
         socket,
         Buffer.from(JSON.stringify(loginData)),
