@@ -23,20 +23,19 @@ const ServerView = () => {
     const networkManager: NetworkManager = NetworkManager.getInstance();
     // Add back handler to disconnect from server on back press
     const onBackPress = () => {
-      console.log("ServerView:", "onBackPress");
+      // console.log("ServerView:", "onBackPress");
       networkManager.closeConnection();
       navigation.removeListener("beforeRemove", onBackPress);
       return true;
     };
     navigation.addListener("beforeRemove", onBackPress);
     // Connect to Server
-    console.log("ServerView:", "useEffect");
     const server = GlobalStore.getInstance().getActiveServer();
     networkManager.onConnect = (data: string) => {
       console.log("ServerView:", "onConnect", data);
     };
     networkManager.onUpdate = (dataText: string) => {
-      console.log("ServerView:", "onUpdate", serverData, serverData.map);
+      // console.log("ServerView:", "onUpdate", serverData, serverData.map);
       const globalStore = GlobalStore.getInstance();
       const activeServer = globalStore.getActiveServer();
       const data: ConnectionMessage = JSON.parse(dataText);
@@ -86,7 +85,7 @@ const ServerView = () => {
   return (
     <ScrollView key={"ServerView-" + server?.id + "-" + server?.name}>
       {serverData.map((currentServerData: SocketData) => {
-        console.log("ServerView:", "currentServerData", currentServerData);
+        // console.log("ServerView:", "currentServerData", currentServerData);
         return (
           <ServerDataPreview
             key={currentServerData.name}

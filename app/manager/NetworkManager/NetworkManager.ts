@@ -64,7 +64,7 @@ export class NetworkManager {
   };
 
   handleConnection = (socket: WebSocket, key: Buffer, name: string) => {
-    console.log("handleConnection");
+    // console.log("handleConnection");
     socket.onmessage = async (e) => {
       if (e.data instanceof Blob) {
         const reader = new FileReader();
