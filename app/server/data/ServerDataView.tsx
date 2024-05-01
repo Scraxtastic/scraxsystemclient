@@ -21,11 +21,11 @@ const ServerDataView = () => {
   return (
     <ScrollView key={"ServerDataView"}>
       <Text>{serverData.name}</Text>
-      <Text>{JSON.stringify(Object.keys(serverData))}</Text>
-      {Object.keys(serverData).map((key) => {
+      <Text>{serverData.ip}</Text>
+      {Object.keys(serverData.data).map((key) => {
         return (
           <Text key={key}>
-            {key}: {serverData[key]}
+            {key}: {JSON.stringify(serverData.data[key]) + typeof serverData.data[key]}
           </Text>
         );
       })}

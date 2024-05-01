@@ -6,8 +6,7 @@ import { GlobalStore } from "../manager/GlobalStore/GlobalStore";
 import { NetworkManager } from "../manager/NetworkManager/NetworkManager";
 import { ModMessage } from "../models/Network/mods/ModMessage";
 import { Buffer } from "buffer";
-import { BasicData } from "../models/Network/BasicData/BasicData";
-import { ServerDataPreview } from "./data/ServerDataPreview";
+import { ServerDataPreview } from "./data/Preview/ServerDataPreview";
 import { useNavigation, useRouter } from "expo-router";
 import { ConnectionMessage } from "../models/Network/ConnectionMessage";
 import { MessageData } from "../models/Network/MessageData";
@@ -41,6 +40,16 @@ const ServerView = () => {
       const data: ConnectionMessage = JSON.parse(dataText);
       if (data.type === "data") {
         const messageData: MessageData = JSON.parse(data.message);
+        messageData.sockets = messageData.sockets.map(
+          (socketData: SocketData) => {
+            if ((socketData.data as unknown as string) === "") {
+              return socketData;
+            }
+            //data is not parsed before this point
+            socketData.data = JSON.parse(socketData.data as unknown as string);
+            return socketData;
+          }
+        );
         const updatedServerData: SocketData[] = [
           ...serverData,
           ...messageData.sockets,
@@ -50,6 +59,7 @@ const ServerView = () => {
         );
         if (activeServerDataSets.length > 0) {
           globalStore.setActiveServerData(activeServerDataSets[0]);
+          globalStore?.onActiveServerDataUpdate(activeServerDataSets[0]);
         }
         setServerData(updatedServerData);
       }
