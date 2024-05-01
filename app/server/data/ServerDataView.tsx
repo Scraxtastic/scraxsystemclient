@@ -1,17 +1,20 @@
 import "react-native-gesture-handler";
-import { Text } from "react-native";
-import { BasicData } from "../../models/Network/BasicData/BasicData";
+import { View } from "react-native";
 import { ScrollView } from "react-native";
 import { useEffect, useState } from "react";
 import { GlobalStore } from "../../manager/GlobalStore/GlobalStore";
 import { SocketData } from "../../models/Network/SocketData";
+import { ExtendedDataView } from "./ExtendedDataView";
+import { Button, Text } from "@react-native-material/core";
 
 const ServerDataView = () => {
   const [serverData, setServerData] = useState<SocketData>(
     GlobalStore.getInstance().getActiveServerData()
   );
+  const [isIpVisible, setIsIpVisible] = useState(false);
   useEffect(() => {
     GlobalStore.getInstance().onActiveServerDataUpdate = (data: SocketData) => {
+      console.log("ServerDataView:", "onActiveServerDataUpdate", data);
       setServerData(data);
     };
   }, []);
@@ -21,14 +24,21 @@ const ServerDataView = () => {
   return (
     <ScrollView key={"ServerDataView"}>
       <Text>{serverData.name}</Text>
-      <Text>{serverData.ip}</Text>
-      {Object.keys(serverData.data).map((key) => {
-        return (
-          <Text key={key}>
-            {key}: {JSON.stringify(serverData.data[key]) + typeof serverData.data[key]}
-          </Text>
-        );
-      })}
+      <View style={{ marginTop: 10, marginBottom: 10 }}>
+        <Button
+          title={isIpVisible ? "Hide IP" : "Show IP"}
+          onPress={() => {
+            setIsIpVisible(!isIpVisible);
+          }}
+        />
+        {isIpVisible && <Text>IP: {serverData.ip}</Text>}
+      </View>
+      {serverData.data && <ExtendedDataView {...serverData.data} />}
+      {serverData.data && (
+        <Text>Mods:{JSON.stringify(serverData.data.mods)} </Text>
+      )}
+      <Text></Text>
+      <Text>{JSON.stringify(serverData)}</Text>
     </ScrollView>
   );
 };

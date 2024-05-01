@@ -37,6 +37,7 @@ const ServerView = () => {
       // console.log("ServerView:", "onUpdate", serverData, serverData.map);
       const globalStore = GlobalStore.getInstance();
       const activeServer = globalStore.getActiveServer();
+      const activeServerData = globalStore.getActiveServerData();
       const data: ConnectionMessage = JSON.parse(dataText);
       if (data.type === "data") {
         const messageData: MessageData = JSON.parse(data.message);
@@ -55,7 +56,7 @@ const ServerView = () => {
           ...messageData.sockets,
         ];
         const activeServerDataSets: SocketData[] = updatedServerData.filter(
-          (data) => data.name === activeServer?.name
+          (data) => data.ip === activeServerData?.ip && data.port === activeServerData?.port
         );
         if (activeServerDataSets.length > 0) {
           globalStore.setActiveServerData(activeServerDataSets[0]);

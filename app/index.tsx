@@ -15,11 +15,6 @@ import { ServerForm } from "./server/ServerForm";
 import { Buffer } from "buffer";
 
 export default function App() {
-  /**
-   * TODO: Load the initial data for the app with FileManager.
-   * TODO: Add FileManager to the new directory.
-   * TODO: Add NetworkManager to the new directory
-   */
   const dataFolder = "/data";
   const serverFile = dataFolder + "/servers.data";
   const router = useRouter();
