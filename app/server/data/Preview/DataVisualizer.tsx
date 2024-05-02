@@ -13,7 +13,7 @@ export interface DataVisualizerProps {
 export const DataVisualizer = (props: DataVisualizerProps) => {
   const ramText = useMemo(() => {
     return props.detailed
-      ? `RAM: ${props.ram?.used} / ${props.ram?.total} MB`
+      ? `RAM: ${props.ram?.used} / ${props.ram?.total} ${props.ram?.unit}`
       : "RAM";
   }, [props.ram, props.detailed]);
   const cpuText = useMemo(() => {
