@@ -6,6 +6,8 @@ import { GlobalStore } from "../../manager/GlobalStore/GlobalStore";
 import { SocketData } from "../../models/Network/SocketData";
 import { ExtendedDataView } from "./ExtendedDataView";
 import { Button, Text } from "@react-native-material/core";
+import { Chat } from "../mods/chat";
+import { Mod } from "../mods/Mod";
 
 const ServerDataView = () => {
   const [serverData, setServerData] = useState<SocketData>(
@@ -14,7 +16,6 @@ const ServerDataView = () => {
   const [isIpVisible, setIsIpVisible] = useState(false);
   useEffect(() => {
     GlobalStore.getInstance().onActiveServerDataUpdate = (data: SocketData) => {
-      console.log("ServerDataView:", "onActiveServerDataUpdate", data);
       setServerData(data);
     };
   }, []);
@@ -39,6 +40,11 @@ const ServerDataView = () => {
       )}
       <Text></Text>
       <Text>{JSON.stringify(serverData)}</Text>
+      {serverData.data.mods?.map((mod) => {
+        return (
+          <Mod key={mod.name + "" + mod.type} name={mod.name} type={mod.type} />
+        );
+      })}
     </ScrollView>
   );
 };
