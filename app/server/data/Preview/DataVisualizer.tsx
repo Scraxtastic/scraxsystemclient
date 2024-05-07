@@ -43,8 +43,8 @@ export const DataVisualizer = (props: DataVisualizerProps) => {
       {!!props.cpuTemp && !!props.cpuTemp.unit && (
         <Diagram
           current={props.cpuTemp?.value}
-          max={70}
-          min={40}
+          max={80}
+          min={30}
           text={cpuTempText}
           width={"auto"}
         />
