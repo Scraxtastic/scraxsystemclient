@@ -56,7 +56,9 @@ const ServerView = () => {
           ...messageData.sockets,
         ];
         const activeServerDataSets: SocketData[] = updatedServerData.filter(
-          (data) => data.ip === activeServerData?.ip && data.port === activeServerData?.port
+          (data) =>
+            data.ip === activeServerData?.ip &&
+            data.port === activeServerData?.port
         );
         if (activeServerDataSets.length > 0) {
           globalStore.setActiveServerData(activeServerDataSets[0]);
@@ -67,6 +69,10 @@ const ServerView = () => {
     };
     networkManager.onModUpdate = (data: ModMessage[]) => {
       console.log("ServerView:", "onModUpdate", data);
+      const modStore = GlobalStore.getInstance().modStore;
+      data.forEach((modMessage: ModMessage) => {
+        modStore.addModData(modMessage.origin, modMessage.modname, modMessage);
+      });
     };
     networkManager.onError = (error: string) => {
       console.log("ServerView:", "onError", error);

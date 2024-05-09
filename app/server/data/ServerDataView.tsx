@@ -23,7 +23,10 @@ const ServerDataView = () => {
     return <Text>Loading...</Text>;
   }
   return (
-    <ScrollView key={"ServerDataView"}>
+    <ScrollView
+      key={"ServerDataView"}
+      style={{ marginLeft: 1, marginRight: 1 }}
+    >
       <Text>{serverData.name}</Text>
       <View style={{ marginTop: 10, marginBottom: 10 }}>
         <Button
@@ -39,7 +42,6 @@ const ServerDataView = () => {
         <Text>Mods:{JSON.stringify(serverData.data.mods)} </Text>
       )}
       <Text></Text>
-      <Text>{JSON.stringify(serverData)}</Text>
       {serverData.data.mods?.map((mod) => {
         return (
           <Mod key={mod.name + "" + mod.type} name={mod.name} type={mod.type} />

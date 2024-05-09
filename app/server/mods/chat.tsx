@@ -5,25 +5,36 @@ import { useState } from "react";
 import { NetworkManager } from "../../manager/NetworkManager/NetworkManager";
 import { GlobalStore } from "../../manager/GlobalStore/GlobalStore";
 import { Buffer } from "buffer";
+import { ModMessage } from "../../models/Network/mods/ModMessage";
 
 export interface ChatProps {
   name: string;
   type: ModType;
+  data: any[];
 }
 
 export const Chat = (props: ChatProps) => {
   const [text, setText] = useState("");
   const sendMessage = async () => {
+    if (text === "") {
+      return;
+    }
     const globalStore = GlobalStore.getInstance();
+    const clientName = globalStore.getActiveServerData().name;
+
+    globalStore.modStore.addModData(clientName, props.name, {
+      origin: "You",
+      message: text,
+    });
 
     const netManager = NetworkManager.getInstance();
 
     console.log("Chat", "Sending mod message");
-    await netManager.sendEncryptedMessage(
+    netManager.sendEncryptedMessage(
       netManager.socket,
       Buffer.from(
         JSON.stringify({
-          target: globalStore.getActiveServerData().name,
+          target: clientName,
           origin: globalStore.getActiveServer().keyName,
           modname: props.name,
           message: text,
@@ -36,10 +47,18 @@ export const Chat = (props: ChatProps) => {
   };
   return (
     <View>
-      <Text>Chat</Text>
-      <Text>
-        {props.name} as {props.type}
-      </Text>
+      <Text>{props.name}</Text>
+      <View style={{ borderWidth: 1, borderColor: "black", marginLeft: 3 }}>
+        {props.data?.map((entry: ModMessage, index: number) => {
+          return (
+            <View key={index + "-" + entry.origin}>
+              <Text>
+                {entry.origin}: {entry.message}
+              </Text>
+            </View>
+          );
+        })}
+      </View>
       <View style={{ width: "98%", margin: "1%" }}>
         <TextInput
           value={text}

@@ -1,6 +1,7 @@
 import { BasicData } from "../../../src/Models/BasicData";
 import { SocketData } from "../../models/Network/SocketData";
 import { ServerProps } from "../../models/ServerProps";
+import { ModStore } from "./ModStore";
 
 export class GlobalStore {
   private static instance: GlobalStore;
@@ -11,6 +12,9 @@ export class GlobalStore {
   //Creation
   public shallCreateServer: boolean = false;
   public onShallCreateServer: (shallCreate: boolean) => void;
+
+  // Mods
+  public modStore: ModStore = ModStore.getInstance();
   private constructor() {}
   public static getInstance(): GlobalStore {
     if (!GlobalStore.instance) {
