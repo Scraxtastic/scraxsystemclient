@@ -1,3 +1,5 @@
+import { ModMessage } from "../../models/Network/mods/ModMessage";
+
 export class ModStore {
   private static instance: ModStore = null;
   public onModDataUpdate = undefined;
@@ -12,12 +14,26 @@ export class ModStore {
     return ModStore.instance;
   }
 
-  public addModData(client: string, modName: string, modData: any) {
+  public addModData(client: string, modName: string, modData: ModMessage) {
     if (this.clients[client] === undefined) {
       this.clients[client] = {};
-      this.clients[client][modName] = [];
     }
-    this.clients[client][modName].push(modData);
+    if (this.clients[client][modName] === undefined) {
+      this.clients[client][modName] = { finished: true, data: [] };
+    }
+    const current = this.clients[client][modName];
+    if (current.finished) {
+      this.clients[client][modName].data.push(modData);
+      if (modData.type !== "modFinished") {
+        current.finished = false;
+      }
+    } else {
+      this.clients[client][modName].data[current.data.length - 1].message +=
+        modData.message;
+      if (modData.type === "modFinished") {
+        current.finished = true;
+      }
+    }
     if (this.onModDataUpdate !== undefined) {
       this.onModDataUpdate();
     }
@@ -27,6 +43,9 @@ export class ModStore {
     if (this.clients[server] === undefined) {
       return null;
     }
-    return this.clients[server][modName];
+    if (this.clients[server][modName] === undefined) {
+      return null;
+    }
+    return this.clients[server][modName].data;
   }
 }

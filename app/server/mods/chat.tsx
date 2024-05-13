@@ -1,6 +1,6 @@
 import { View, Text } from "react-native";
 import { ModType } from "../../models/Network/mods/ModType";
-import { Button, TextInput } from "@react-native-material/core";
+import { Button, Divider, TextInput } from "@react-native-material/core";
 import { useState } from "react";
 import { NetworkManager } from "../../manager/NetworkManager/NetworkManager";
 import { GlobalStore } from "../../manager/GlobalStore/GlobalStore";
@@ -25,11 +25,12 @@ export const Chat = (props: ChatProps) => {
     globalStore.modStore.addModData(clientName, props.name, {
       origin: "You",
       message: text,
+      target: clientName,
+      modname: props.name,
+      type: "modFinished",
     });
 
     const netManager = NetworkManager.getInstance();
-
-    console.log("Chat", "Sending mod message");
     netManager.sendEncryptedMessage(
       netManager.socket,
       Buffer.from(
@@ -68,6 +69,7 @@ export const Chat = (props: ChatProps) => {
         />
         <Button title={"Send"} onPress={sendMessage} />
       </View>
+      <Divider />
     </View>
   );
 };

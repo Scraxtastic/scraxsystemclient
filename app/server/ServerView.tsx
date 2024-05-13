@@ -62,13 +62,11 @@ const ServerView = () => {
         );
         if (activeServerDataSets.length > 0) {
           globalStore.setActiveServerData(activeServerDataSets[0]);
-          globalStore?.onActiveServerDataUpdate(activeServerDataSets[0]);
         }
         setServerData(updatedServerData);
       }
     };
     networkManager.onModUpdate = (data: ModMessage[]) => {
-      console.log("ServerView:", "onModUpdate", data);
       const modStore = GlobalStore.getInstance().modStore;
       data.forEach((modMessage: ModMessage) => {
         modStore.addModData(modMessage.origin, modMessage.modname, modMessage);

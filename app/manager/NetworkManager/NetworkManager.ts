@@ -64,7 +64,6 @@ export class NetworkManager {
   };
 
   handleConnection = (socket: WebSocket, key: Buffer, name: string) => {
-    console.log("NetworkManager:", "handleConnection");
     socket.onmessage = async (e) => {
       if (e.data instanceof Blob) {
         const reader = new FileReader();
@@ -92,7 +91,7 @@ export class NetworkManager {
             "base64"
           ).toString("utf-8");
           const modMessage: ModMessage = JSON.parse(this.lastData);
-          if (modMessage.type === "mod") {
+          if (modMessage.type === "mod" || modMessage.type === "modFinished") {
             this.currentModUpdates = [...this.currentModUpdates, modMessage];
             if (this.lastModUpdateSendTime + 1000 < Date.now()) {
               this.lastModUpdateSendTime = Date.now();
@@ -141,7 +140,6 @@ export class NetworkManager {
       this.isConnected = true;
       this.onConnect("Connected to server.");
       const loginData: LoginData = { name: name, type: "receiver" };
-      console.log("NetworkManager", "send LoginData:", loginData);
       this.sendEncryptedMessage(
         socket,
         Buffer.from(JSON.stringify(loginData)),

@@ -8,17 +8,24 @@ import { ExtendedDataView } from "./ExtendedDataView";
 import { Button, Text } from "@react-native-material/core";
 import { Chat } from "../mods/chat";
 import { Mod } from "../mods/Mod";
+import { Divider } from "react-native-elements";
 
 const ServerDataView = () => {
+  const globalStore = GlobalStore.getInstance();
   const [serverData, setServerData] = useState<SocketData>(
-    GlobalStore.getInstance().getActiveServerData()
+    globalStore.getActiveServerData()
   );
   const [isIpVisible, setIsIpVisible] = useState(false);
+  const [updateCount, setUpdateCount] = useState(0);
   useEffect(() => {
-    GlobalStore.getInstance().onActiveServerDataUpdate = (data: SocketData) => {
+    globalStore.onActiveServerDataUpdate = (data: SocketData) => {
       setServerData(data);
     };
   }, []);
+
+  globalStore.modStore.onModDataUpdate = () => {
+    setUpdateCount((updateCount) => updateCount + 1);
+  };
   if (serverData === undefined || serverData === null) {
     return <Text>Loading...</Text>;
   }
@@ -37,14 +44,20 @@ const ServerDataView = () => {
         />
         {isIpVisible && <Text>IP: {serverData.ip}</Text>}
       </View>
-      {serverData.data && <ExtendedDataView {...serverData.data} />}
-      {serverData.data && (
+      {/* <Text>serverdata: {JSON.stringify(serverData.data)}</Text> */}
+      {/* {serverData.data && <ExtendedDataView {...serverData.data} />} */}
+      {/* {serverData.data && (
         <Text>Mods:{JSON.stringify(serverData.data.mods)} </Text>
-      )}
-      <Text></Text>
+      )} */}
+      <Divider />
       {serverData.data.mods?.map((mod) => {
         return (
-          <Mod key={mod.name + "" + mod.type} name={mod.name} type={mod.type} />
+          <Mod
+            key={mod.name + "" + mod.type}
+            name={mod.name}
+            type={mod.type}
+            updateCount={updateCount}
+          />
         );
       })}
     </ScrollView>
