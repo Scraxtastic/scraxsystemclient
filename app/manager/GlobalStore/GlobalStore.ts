@@ -7,8 +7,10 @@ export class GlobalStore {
   private static instance: GlobalStore;
   private servers: ServerProps[] = [];
   private activeServer: ServerProps | null = null;
+  public onActiveServerUpdate: (server: ServerProps) => void;
   private activeServerData: SocketData | null = null;
   public onActiveServerDataUpdate: (data: SocketData) => void;
+  public onActiveServerDataUpdateLayout: (data: SocketData) => void;
   //Creation
   public shallCreateServer: boolean = false;
   public onShallCreateServer: (shallCreate: boolean) => void;
@@ -42,6 +44,9 @@ export class GlobalStore {
   }
   public setActiveServer(server: ServerProps) {
     this.activeServer = server;
+    if (this.onActiveServerUpdate !== undefined) {
+      this.onActiveServerUpdate(server);
+    }
   }
   public getActiveServer() {
     return this.activeServer;
@@ -50,6 +55,9 @@ export class GlobalStore {
     this.activeServerData = data;
     if (this.onActiveServerDataUpdate !== undefined) {
       this.onActiveServerDataUpdate(data);
+    }
+    if (this.onActiveServerDataUpdateLayout !== undefined) {
+      this.onActiveServerDataUpdateLayout(data);
     }
   }
   public getActiveServerData() {

@@ -3,12 +3,38 @@ import { Link, Stack, router, useNavigation } from "expo-router";
 import { Modal, View } from "react-native";
 import { BasicServer } from "./server/BasicServer";
 import { ServerProps } from "./models/ServerProps";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { GlobalStore } from "./manager/GlobalStore/GlobalStore";
-
-
+import { SocketData } from "./models/Network/SocketData";
+import {
+  ConnectionStatus,
+  NetworkManager,
+} from "./manager/NetworkManager/NetworkManager";
+import { ConnectionIndicator } from "./ConnectionIndicator";
 
 export const RootLayout = () => {
+  const globalStore = GlobalStore.getInstance();
+  const [serverData, setServerData] = useState<ServerProps>(
+    globalStore.getActiveServer()
+  );
+  const [clientData, setClientData] = useState<SocketData>(
+    globalStore.getActiveServerData()
+  );
+  const [connectionStatus, setConnectionStatus] =
+    useState<ConnectionStatus>("disconnected");
+  useEffect(() => {
+    globalStore.onActiveServerUpdate = (data: ServerProps) => {
+      setServerData(data);
+    };
+    globalStore.onActiveServerDataUpdateLayout = (data: SocketData) => {
+      setClientData(data);
+    };
+    NetworkManager.getInstance().onConnectionStatusChange = (
+      status: ConnectionStatus
+    ) => {
+      setConnectionStatus(status);
+    };
+  }, []);
   return (
     <Stack
       screenOptions={{
@@ -22,6 +48,7 @@ export const RootLayout = () => {
       <Stack.Screen
         name="index"
         options={{
+          headerTitle: "Home",
           headerRight(props) {
             return (
               <View>
@@ -40,11 +67,16 @@ export const RootLayout = () => {
       />
       <Stack.Screen
         name="server/ServerView"
-        options={{ headerTitle: "Server" }}
+        options={{
+          headerTitle: serverData?.name,
+          headerRight(props) {
+            return <ConnectionIndicator key={"ConnectionIndicator"} status={connectionStatus} />;
+          },
+        }}
       />
       <Stack.Screen
         name="server/data/ServerDataView"
-        options={{ headerTitle: "ServerView" }}
+        options={{ headerTitle: clientData?.name }}
       />
     </Stack>
   );

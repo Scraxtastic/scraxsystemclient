@@ -5,6 +5,7 @@ import CryptoJS from "crypto-js";
 import { LoginData } from "../../models/Network/LoginData";
 import { ModMessage } from "../../models/Network/mods/ModMessage";
 
+export type ConnectionStatus = "connected" | "disconnected" | "connecting";
 export class NetworkManager {
   private static instance: NetworkManager = null;
 
@@ -12,7 +13,7 @@ export class NetworkManager {
   public data: string;
   public isConnected: boolean;
   public isConnecting: boolean;
-  public isVerified: boolean;
+  public onConnectionStatusChange: (status: ConnectionStatus) => void;
   public onConnect: (data: string) => void;
   public onUpdate: (data: string) => void;
   public onModUpdate: (data: ModMessage[]) => void;
@@ -39,12 +40,14 @@ export class NetworkManager {
     socket.binaryType = "blob";
     this.isConnecting = true;
     console.log("WClient:", "ip", ip, "name", name);
+    this.onConnectionStatusChange("connecting");
     this.handleConnection(socket, key, name);
   };
 
   closeConnection = () => {
     this.socket?.close();
     this.isConnected = false;
+    this.onConnectionStatusChange("disconnected");
     console.log("NetworkManager:", "Connection closed.");
   };
 
@@ -92,6 +95,9 @@ export class NetworkManager {
           ).toString("utf-8");
           const modMessage: ModMessage = JSON.parse(this.lastData);
           if (modMessage.type === "mod" || modMessage.type === "modFinished") {
+            if (modMessage.type === "modFinished") {
+              console.log("Finished mod message", modMessage);
+            }
             this.currentModUpdates = [...this.currentModUpdates, modMessage];
             if (this.lastModUpdateSendTime + 1000 < Date.now()) {
               this.lastModUpdateSendTime = Date.now();
@@ -138,6 +144,7 @@ export class NetworkManager {
     socket.onopen = () => {
       this.isConnecting = false;
       this.isConnected = true;
+      this.onConnectionStatusChange("connected");
       this.onConnect("Connected to server.");
       const loginData: LoginData = { name: name, type: "receiver" };
       this.sendEncryptedMessage(
