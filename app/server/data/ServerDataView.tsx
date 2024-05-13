@@ -34,7 +34,6 @@ const ServerDataView = () => {
       key={"ServerDataView"}
       style={{ marginLeft: 1, marginRight: 1 }}
     >
-      <Text>{serverData.name}</Text>
       <View style={{ marginTop: 10, marginBottom: 10 }}>
         <Button
           title={isIpVisible ? "Hide IP" : "Show IP"}
@@ -45,19 +44,22 @@ const ServerDataView = () => {
         {isIpVisible && <Text>IP: {serverData.ip}</Text>}
       </View>
       {/* <Text>serverdata: {JSON.stringify(serverData.data)}</Text> */}
-      {/* {serverData.data && <ExtendedDataView {...serverData.data} />} */}
+      {serverData.data && <ExtendedDataView {...serverData.data} />}
       {/* {serverData.data && (
         <Text>Mods:{JSON.stringify(serverData.data.mods)} </Text>
       )} */}
       <Divider />
       {serverData.data.mods?.map((mod) => {
         return (
-          <Mod
-            key={mod.name + "" + mod.type}
-            name={mod.name}
-            type={mod.type}
-            updateCount={updateCount}
-          />
+          <>
+            <Mod
+              key={mod.name + "" + mod.type}
+              name={mod.name}
+              type={mod.type}
+              updateCount={updateCount}
+            />
+            <Divider />
+          </>
         );
       })}
     </ScrollView>
