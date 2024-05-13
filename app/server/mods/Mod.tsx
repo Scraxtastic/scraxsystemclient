@@ -14,6 +14,7 @@ export interface ModProps {
 export const Mod = (props: ModProps) => {
   const globalData = GlobalStore.getInstance();
   const [data, setData] = useState<any[]>([]);
+  const [isExtended, setIsExtended] = useState(true);
   const updatedServerData = () => {
     const sender = globalData.getActiveServerData().name;
     globalData.modStore.getModData(sender, props.name);
@@ -23,7 +24,18 @@ export const Mod = (props: ModProps) => {
     updatedServerData();
   }, [props.updateCount]);
   if (props.type === "Chat") {
-    return <Chat name={props.name} type={props.type} data={data} />;
+    return (
+      <View>
+        <Text
+          onPress={() => {
+            setIsExtended(!isExtended);
+          }}
+        >
+          {props.name}
+        </Text>
+        {isExtended && <Chat name={props.name} type={props.type} data={data} />}
+      </View>
+    );
   }
   return (
     <View style={{ marginBottom: 20 }}>
