@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, ScrollView } from "react-native";
 import { ModType } from "../../models/Network/mods/ModType";
 import { Button, Divider, TextInput } from "@react-native-material/core";
 import { useState } from "react";
@@ -48,11 +48,29 @@ export const Chat = (props: ChatProps) => {
   };
   return (
     <View>
-      <Text>{props.name}</Text>
-      <View style={{ borderWidth: 1, borderColor: "black", marginLeft: 3 }}>
+      <View
+        style={{
+          borderWidth: 1,
+          borderColor: "black",
+          marginLeft: 3,
+        }}
+      >
         {props.data?.map((entry: ModMessage, index: number) => {
           return (
-            <View key={index + "-" + entry.origin}>
+            <View
+              key={index + "-" + entry.origin}
+              style={{
+                borderColor: "darkgrey",
+                borderRadius: 10,
+                borderWidth: 1,
+                maxWidth: "80%",
+                backgroundColor:
+                  entry.origin === "You" ? "lightblue" : "lightgrey",
+                alignSelf: entry.origin === "You" ? "flex-end" : "flex-start",
+                padding: 5,
+                margin: 1,
+              }}
+            >
               <Text>
                 {entry.origin}: {entry.message}
               </Text>
