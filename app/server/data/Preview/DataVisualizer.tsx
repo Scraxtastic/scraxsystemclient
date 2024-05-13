@@ -33,13 +33,15 @@ export const DataVisualizer = (props: DataVisualizerProps) => {
         text={ramText}
         width={"auto"}
       />
-      <Diagram
-        current={props.cpuLoad?.value}
-        max={100}
-        min={0}
-        text={cpuText}
-        width={"auto"}
-      />
+      {!!props.cpuLoad && (
+        <Diagram
+          current={props.cpuLoad?.value}
+          max={100}
+          min={0}
+          text={cpuText}
+          width={"auto"}
+        />
+      )}
       {!!props.cpuTemp && !!props.cpuTemp.unit && (
         <Diagram
           current={props.cpuTemp?.value}
