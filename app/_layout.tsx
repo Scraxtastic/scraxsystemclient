@@ -70,13 +70,28 @@ export const RootLayout = () => {
         options={{
           headerTitle: serverData?.name,
           headerRight(props) {
-            return <ConnectionIndicator key={"ConnectionIndicator"} status={connectionStatus} />;
+            return (
+              <ConnectionIndicator
+                key={"ConnectionIndicator"}
+                status={connectionStatus}
+              />
+            );
           },
         }}
       />
       <Stack.Screen
         name="server/data/ServerDataView"
-        options={{ headerTitle: clientData?.name }}
+        options={{
+          headerTitle: clientData?.name,
+          headerRight(props) {
+            return (
+              <ConnectionIndicator
+                key={"ConnectionIndicator"}
+                status={connectionStatus}
+              />
+            );
+          },
+        }}
       />
     </Stack>
   );

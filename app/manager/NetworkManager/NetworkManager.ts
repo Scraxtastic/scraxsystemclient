@@ -140,6 +140,7 @@ export class NetworkManager {
         }) msg: ${JSON.stringify(e)}`
       );
       console.log("NetworkManager:", "Socket error:", e);
+      this.onConnectionStatusChange("disconnected");
     };
     socket.onopen = () => {
       this.isConnecting = false;

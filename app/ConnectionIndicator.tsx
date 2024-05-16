@@ -23,21 +23,17 @@ export const ConnectionIndicator = (props: ConnectionIndicatorProps) => {
         setBackgroundColor("grey");
         break;
     }
-    console.log(
-      "ConnectionIndicator:",
-      "Status changed to",
-      props.status,
-      backgroundColor
-    );
   }, [props.status]);
   return (
     <View
+      key={"connectionIndicator"}
       style={{
         backgroundColor: backgroundColor,
         width: 18,
         height: 18,
-        borderRadius: 30,
+        borderRadius: 10,
+        overflow: "hidden",
       }}
-    ></View>
+    />
   );
 };
