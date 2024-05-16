@@ -49,17 +49,17 @@ const ServerDataView = () => {
         <Text>Mods:{JSON.stringify(serverData.data.mods)} </Text>
       )} */}
       <Divider />
-      {serverData.data.mods?.map((mod) => {
+      {serverData.data.mods?.map((mod, index) => {
         return (
-          <>
+          <View key={"mod-" + mod.name + "-" + mod.type}>
             <Mod
-              key={mod.name + "" + mod.type}
+              key={"mod-" + mod.name + "-" + mod.type}
               name={mod.name}
               type={mod.type}
               updateCount={updateCount}
             />
             <Divider />
-          </>
+          </View>
         );
       })}
     </ScrollView>
