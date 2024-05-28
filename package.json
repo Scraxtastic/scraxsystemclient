@@ -37,7 +37,8 @@
     "react-native-screens": "~3.29.0",
     "react-native-web": "^0.19.10",
     "source-map-support": "^0.5.21",
-    "ws": "^8.16.0"
+    "ws": "^8.16.0",
+    "expo-secure-store": "~12.8.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

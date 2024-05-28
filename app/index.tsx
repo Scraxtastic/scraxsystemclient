@@ -13,13 +13,18 @@ import { GlobalStore } from "./manager/GlobalStore/GlobalStore";
 import { BasicServer } from "./server/BasicServer";
 import { ServerForm } from "./server/ServerForm";
 import { Buffer } from "buffer";
+import { Platform } from "react-native";
+import BrowserFileManager from "./manager/FileManager/BrowserFileManager";
 
 export default function App() {
   const dataFolder = "/data";
   const serverFile = dataFolder + "/servers.data";
   const router = useRouter();
   const globalStore = GlobalStore.getInstance();
-  const fileManager = FileManager.ensureInstance();
+  const fileManager =
+    Platform.OS !== "web"
+      ? FileManager.ensureInstance()
+      : BrowserFileManager.ensureInstance();
   const [isEditingServer, setIsEditingServer] = useState(
     globalStore.getShallCreateServer()
   );
