@@ -4,7 +4,7 @@ import {
   decryptFileData,
   encryptData,
   encryptFileData,
-} from "../../../src/Network/cbc";
+} from "../NetworkManager/cbc";
 import { Buffer } from "buffer";
 
 export default class FileManager {
