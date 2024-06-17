@@ -6,7 +6,7 @@ import { GlobalStore } from "../../manager/GlobalStore/GlobalStore";
 import { SocketData } from "../../models/Network/SocketData";
 import { ExtendedDataView } from "./ExtendedDataView";
 import { Button, Text } from "@react-native-material/core";
-import { Chat } from "../mods/chat";
+import { Chat } from "../mods/Chat";
 import { Mod } from "../mods/Mod";
 import { Divider } from "react-native-elements";
 
