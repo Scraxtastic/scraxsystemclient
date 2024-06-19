@@ -68,6 +68,7 @@ const ServerView = () => {
     };
     networkManager.onModUpdate = (data: ModMessage[]) => {
       const modStore = GlobalStore.getInstance().modStore;
+      console.log("ServerView:", "onModUpdate", data)
       data.forEach((modMessage: ModMessage) => {
         modStore.addModData(modMessage.origin, modMessage.modname, modMessage);
       });

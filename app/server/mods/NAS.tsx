@@ -45,24 +45,37 @@ export const NAS = (props: NASProps) => {
     );
   };
   useEffect(() => {
-    console.log("NAS", "Updating");
+    console.log("NAS", "Updating", props.updateCount, props.data);
     if (props.data === undefined || props.data === null) {
       return;
     }
+    console.log("NAS", "Data", props.data);
     const newItem = props.data
-      .map((item) => JSON.parse(item.message))
+      .map((item) => {
+        const parsed = JSON.parse(item.message);
+        console.log("NAS", "parsed", parsed);
+        return parsed;
+      })
       .reduce((acc, item) => {
+        console.log("NAS", "Item", item, "acc", acc);
         if (item.type === "list") {
           return item;
         }
         return acc;
       }, undefined);
     if (newItem === undefined) {
+      console.log("NAS", "No Data");
       return;
     }
+    console.log(
+      "NAS",
+      "Setting Data",
+      [{ name: "..", path: "..", isDirectory: true }, ...newItem.data],
+      props.updateCount
+    );
     setData([{ name: "..", path: "..", isDirectory: true }, ...newItem.data]);
     setPath(newItem.path);
-  }, [props.updateCount]);
+  }, [props.updateCount, props.data]);
 
   useEffect(() => {
     console.log("Sending list");
@@ -134,10 +147,10 @@ export const NAS = (props: NASProps) => {
   );
 
   return (
-    <View>
+    <View key={`NAS-${props.updateCount}`}>
       <View style={{ width: "98%", margin: "1%" }}>
         <Text>{path}</Text>
-        <Text>{JSON.stringify(data)}</Text>
+        {/* <Text>{JSON.stringify(data)}</Text> */}
         <FlatList
           key={"nas"}
           data={data}
@@ -145,7 +158,7 @@ export const NAS = (props: NASProps) => {
           keyExtractor={(item) => item.name}
         />
       </View>
-      <Text>{JSON.stringify(data)}</Text>
+      {/* <Text>{JSON.stringify(data)}</Text> */}
       <Divider />
     </View>
   );

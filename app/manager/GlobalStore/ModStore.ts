@@ -21,19 +21,22 @@ export class ModStore {
     if (this.clients[client][modName] === undefined) {
       this.clients[client][modName] = { finished: true, data: [] };
     }
-    const current = this.clients[client][modName];
-    if (current.finished) {
-      this.clients[client][modName].data.push(modData);
-      if (modData.type !== "modFinished") {
-        current.finished = false;
-      }
-    } else {
-      this.clients[client][modName].data[current.data.length - 1].message +=
-        modData.message;
-      if (modData.type === "modFinished") {
-        current.finished = true;
-      }
-    }
+    // const current = this.clients[client][modName];
+    
+    
+    this.clients[client][modName].data.push(modData);
+    // if (current.finished) {
+    //   this.clients[client][modName].data.push(modData);
+    //   if (modData.type !== "modFinished") {
+    //     current.finished = false;
+    //   }
+    // } else {
+    //   this.clients[client][modName].data[current.data.length - 1].message +=
+    //     modData.message;
+    //   if (modData.type === "modFinished") {
+    //     current.finished = true;
+    //   }
+    // }
     if (this.onModDataUpdate !== undefined) {
       this.onModDataUpdate();
     }

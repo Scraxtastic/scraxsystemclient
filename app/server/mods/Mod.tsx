@@ -1,10 +1,10 @@
 import { View, Text } from "react-native";
 import { ModType } from "../../models/Network/mods/ModType";
-import { Chat } from "./Chat";
 import { GlobalStore } from "../../manager/GlobalStore/GlobalStore";
 import { useEffect, useMemo, useState } from "react";
 import { Divider } from "react-native-elements";
 import { NAS } from "./NAS";
+import { Chat } from "./Chat";
 
 export interface ModProps {
   name: string;
@@ -17,14 +17,29 @@ export const Mod = (props: ModProps) => {
   const [data, setData] = useState<any[]>([]);
   const [isExtended, setIsExtended] = useState(true);
   const updatedServerData = () => {
-    console.log("Mod", "updating", props.name, props.type, props.updateCount);
     const sender = globalData.getActiveServerData().name;
-    globalData.modStore.getModData(sender, props.name);
-    setData(globalData.modStore.getModData(sender, props.name));
+    console.log(
+      "Mod",
+      "updating",
+      props.name,
+      props.type,
+      props.updateCount,
+      globalData.modStore.getModData(sender, props.name)
+    );
+    const newData = globalData.modStore.getModData(sender, props.name);
+    if (newData === null) {
+      setData([]);
+      return;
+    }
+    console.log("newDAta", newData, newData === null);
+    setData([...globalData.modStore.getModData(sender, props.name)]);
   };
   useEffect(() => {
     updatedServerData();
   }, [props.updateCount]);
+  useEffect(() => {
+    console.log("Mod", "Updated Data", data);
+  }, [data]);
   //TODO: Extract into collapisbles
   if (props.type === "Chat") {
     return (
