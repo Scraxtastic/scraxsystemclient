@@ -1,7 +1,7 @@
 import { View, Text, ScrollView } from "react-native";
 import { ModType } from "../../models/Network/mods/ModType";
 import { Button, Divider, TextInput } from "@react-native-material/core";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NetworkManager } from "../../manager/NetworkManager/NetworkManager";
 import { GlobalStore } from "../../manager/GlobalStore/GlobalStore";
 import { Buffer } from "buffer";
@@ -15,6 +15,7 @@ export interface ChatProps {
 
 export const Chat = (props: ChatProps) => {
   const [text, setText] = useState("");
+  const [data, setData] = useState<ModMessage[]>([]);
   const sendMessage = async () => {
     if (text === "") {
       return;
@@ -46,6 +47,38 @@ export const Chat = (props: ChatProps) => {
     );
     setText("");
   };
+  useEffect(() => {
+    const hasOrigin = (msgs: ModMessage[], origin: string) => {
+      for (let i = 0; i < msgs.length; i++) {
+        if (msgs[i].origin === origin) {
+          return true;
+        }
+      }
+      return false;
+    };
+    const newData = props.data.reduce(
+      (msgs: ModMessage[], entry: ModMessage) => {
+        if (msgs.length === 0 || !hasOrigin(msgs, entry.origin)) {
+          msgs.push({ ...entry });
+          return msgs;
+        }
+        for (let i = 1; i <= msgs.length; i++) {
+          if (msgs[msgs.length - i].origin === entry.origin) {
+            if (msgs[msgs.length - i].type === "modFinished") {
+              msgs.push({ ...entry });
+            } else {
+              msgs[msgs.length - i].message += entry.message;
+              msgs[msgs.length - i].type = entry.type; // set to modFinished to ensure that every message is displayed
+            }
+            break;
+          }
+        }
+        return msgs;
+      },
+      []
+    );
+    setData(newData);
+  }, [props.data]);
   return (
     <View>
       <View
@@ -55,7 +88,7 @@ export const Chat = (props: ChatProps) => {
           marginLeft: 3,
         }}
       >
-        {props.data?.map((entry: ModMessage, index: number) => {
+        {data?.map((entry: ModMessage, index: number) => {
           return (
             <View
               key={index + "-" + entry.origin}
