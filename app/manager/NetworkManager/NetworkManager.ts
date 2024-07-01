@@ -107,6 +107,10 @@ export class NetworkManager {
           } else {
             this.onUpdate(this.lastData);
           }
+          if (this.currentModUpdates.length > 0) {
+            this.onModUpdate(this.currentModUpdates);
+            this.currentModUpdates = [];
+          }
         };
         reader.onerror = (e) => {
           console.error("Error reading blob:", e);
