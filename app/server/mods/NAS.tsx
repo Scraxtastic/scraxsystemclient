@@ -45,19 +45,16 @@ export const NAS = (props: NASProps) => {
     );
   };
   useEffect(() => {
-    console.log("NAS", "Updating", props.updateCount, props.data);
+    // console.log("NAS", "Updating", props.updateCount, props.data);
     if (props.data === undefined || props.data === null) {
       return;
     }
-    console.log("NAS", "Data", props.data);
     const newItem = props.data
       .map((item) => {
         const parsed = JSON.parse(item.message);
-        console.log("NAS", "parsed", parsed);
         return parsed;
       })
       .reduce((acc, item) => {
-        console.log("NAS", "Item", item, "acc", acc);
         if (item.type === "list") {
           return item;
         }
@@ -67,18 +64,11 @@ export const NAS = (props: NASProps) => {
       console.log("NAS", "No Data");
       return;
     }
-    console.log(
-      "NAS",
-      "Setting Data",
-      [{ name: "..", path: "..", isDirectory: true }, ...newItem.data],
-      props.updateCount
-    );
     setData([{ name: "..", path: "..", isDirectory: true }, ...newItem.data]);
     setPath(newItem.path);
   }, [props.updateCount, props.data]);
 
   useEffect(() => {
-    console.log("Sending list");
     sendMessage({ type: "list" });
   }, []);
   const styles = {
