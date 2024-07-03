@@ -113,6 +113,7 @@ export const Chat = (props: ChatProps) => {
       </View>
       <View style={{ width: "98%", margin: "1%" }}>
         <TextInput
+          inputStyle={{ backgroundColor: "darkgray" }}
           value={text}
           onChangeText={(text: string) => {
             setText(text);

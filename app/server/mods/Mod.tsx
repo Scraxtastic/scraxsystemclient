@@ -3,8 +3,9 @@ import { ModType } from "../../models/Network/mods/ModType";
 import { GlobalStore } from "../../manager/GlobalStore/GlobalStore";
 import { useEffect, useMemo, useState } from "react";
 import { Divider } from "react-native-elements";
-import { NAS } from "./NAS";
+import { NAS } from "./NAS/NAS";
 import { Chat } from "./Chat";
+import { Collapsible } from "../../components/Collapsible";
 
 export interface ModProps {
   name: string;
@@ -43,45 +44,26 @@ export const Mod = (props: ModProps) => {
   //TODO: Extract into collapisbles
   if (props.type === "Chat") {
     return (
-      <View>
-        <Text
-          onPress={() => {
-            setIsExtended(!isExtended);
-          }}
-        >
-          {props.name}
-        </Text>
-        {isExtended && <Chat name={props.name} type={props.type} data={data} />}
-      </View>
+      <Collapsible name={props.name}>
+        <Chat name={props.name} type={props.type} data={data} />
+      </Collapsible>
     );
   }
   if (props.type === "NAS") {
     return (
-      <View>
-        <Text
-          onPress={() => {
-            setIsExtended(!isExtended);
-          }}
-        >
-          {props.name}
-        </Text>
-        {isExtended && (
-          <NAS
-            name={props.name}
-            type={props.type}
-            data={data}
-            updateCount={props.updateCount}
-          />
-        )}
-      </View>
+      <Collapsible name={props.name}>
+        <NAS
+          name={props.name}
+          type={props.type}
+          data={data}
+          updateCount={props.updateCount}
+        />
+      </Collapsible>
     );
   }
   return (
-    <View style={{ marginBottom: 20 }}>
-      <Text>Mod</Text>
-      <Text>
-        {props.name} as {props.type} not yet implemented.
-      </Text>
-    </View>
+    <Collapsible name={props.name}>
+        <Text>Not yet available</Text>
+      </Collapsible>
   );
 };

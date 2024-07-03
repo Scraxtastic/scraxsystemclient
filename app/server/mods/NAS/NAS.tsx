@@ -4,15 +4,17 @@ import {
   ScrollView,
   TouchableOpacity,
   FlatList,
+  FlatListProps,
 } from "react-native";
-import { ModType } from "../../models/Network/mods/ModType";
+import { ModType } from "../../../models/Network/mods/ModType";
 import { Button, Divider, TextInput } from "@react-native-material/core";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { useEffect, useState } from "react";
-import { NetworkManager } from "../../manager/NetworkManager/NetworkManager";
-import { GlobalStore } from "../../manager/GlobalStore/GlobalStore";
+import { NetworkManager } from "../../../manager/NetworkManager/NetworkManager";
+import { GlobalStore } from "../../../manager/GlobalStore/GlobalStore";
 import { Buffer } from "buffer";
-import { ModMessage } from "../../models/Network/mods/ModMessage";
+import { ModMessage } from "../../../models/Network/mods/ModMessage";
+import { NASItem } from "./NASItem";
 
 export interface NASProps {
   name: string;
@@ -71,70 +73,6 @@ export const NAS = (props: NASProps) => {
   useEffect(() => {
     sendMessage({ type: "list" });
   }, []);
-  const styles = {
-    item: {
-      flexDirection: "row",
-      alignItems: "center",
-      padding: 10,
-      borderBottomWidth: 1,
-      borderBottomColor: "#ccc",
-    },
-    itemText: {
-      marginLeft: 10,
-      fontSize: 18,
-    },
-  };
-
-  const getSize = (size: number) => {
-    if (size < 1024) {
-      return `${size}B`;
-    }
-    if (size < 1024 * 1024) {
-      return `${(size / 1024).toFixed(2)}KB`;
-    }
-    if (size < 1024 * 1024 * 1024) {
-      return `${(size / 1024 / 1024).toFixed(2)}MB`;
-    }
-    return `${(size / 1024 / 1024 / 1024).toFixed(2)}GB`;
-  };
-  const renderItem = ({ item }) => (
-    /**Open modal on click, in which the file can be downloaded, cached, edited or removed
-     *
-     */
-    <TouchableOpacity
-      key={item.name}
-      style={{
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-        padding: 10,
-        borderBottomWidth: 1,
-        borderBottomColor: "#ccc",
-        backgroundColor: "#fff",
-      }}
-      onPress={() => {
-        if (item.isDirectory) {
-          sendMessage({ type: "cd", path: item.name });
-        }
-      }}
-    >
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-        }}
-      >
-        <Icon
-          name={item.isDirectory ? "folder" : "insert-drive-file"}
-          size={30}
-          color="#000"
-        />
-        <Text style={styles.itemText}>{item.name}</Text>
-      </View>
-      {!item.isDirectory && <Text>{getSize(item.size)}</Text>}
-      {item.isDirectory && <Text>Dir</Text>}
-    </TouchableOpacity>
-  );
 
   return (
     <View key={`NAS-${props.updateCount}`}>
@@ -144,7 +82,9 @@ export const NAS = (props: NASProps) => {
         <FlatList
           key={"nas"}
           data={data}
-          renderItem={renderItem}
+          renderItem={({ item }) => {
+            return <NASItem item={item} sendMessage={sendMessage} />;
+          }}
           keyExtractor={(item) => item.name}
         />
       </View>
