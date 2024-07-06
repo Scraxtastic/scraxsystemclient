@@ -48,8 +48,15 @@ export const NASItem = (props: NASItemProps) => {
         backgroundColor: "darkgray",
       }}
       onPress={() => {
+        console.log("OnPress", props.item.isDirectory, props.item.name);
         if (props.item.isDirectory) {
           props.sendMessage({ type: "cd", path: props.item.name });
+        } else {
+          props.sendMessage({
+            type: "read",
+            path: props.item.name,
+            fileName: props.item.name,
+          });
         }
       }}
     >
