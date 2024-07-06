@@ -1,5 +1,6 @@
 import "react-native-gesture-handler";
-import { Modal, View, Text, ScrollView } from "react-native";
+import { View, Text, ScrollView } from "react-native";
+import Modal from "react-native-modal";
 import { Button } from "@react-native-material/core";
 import {
   useGlobalSearchParams,
@@ -31,10 +32,13 @@ export default function App() {
   const [serverToEdit, setServerToEdit] = useState<ServerProps>(
     createEmptyServerProps()
   );
+  const [isCreatingNewServerEntry, setIsCreatingNewServerEntry] =
+    useState(false);
 
   const [servers, setServers] = useState<ServerProps[]>([]);
   const saveData = async () => {
     const servers = globalStore.getServers();
+    console.log("Saving servers", servers);
     await fileManager.saveFile(
       serverFile,
       Buffer.from(JSON.stringify(servers))
@@ -56,21 +60,12 @@ export default function App() {
   useEffect(() => {
     globalStore.onShallCreateServer = (shallCreate: boolean) => {
       setIsEditingServer(shallCreate);
+      setIsCreatingNewServerEntry(true);
     };
     loadData();
   }, []);
   return (
     <ScrollView>
-      <Button
-        title={"CLEAR"}
-        onPress={async () => {
-          await fileManager.saveFile(
-            serverFile,
-            Buffer.from(JSON.stringify([]))
-          );
-          await loadData();
-        }}
-      ></Button>
       {servers?.map((server: ServerProps) => {
         return (
           <View
@@ -101,20 +96,23 @@ export default function App() {
               onPress={() => {
                 setServerToEdit(server);
                 setIsEditingServer(true);
+                setIsCreatingNewServerEntry(false);
               }}
             ></Button>
           </View>
         );
       })}
       <Modal
-        animationType="fade"
-        transparent={true}
-        visible={isEditingServer}
+        statusBarTranslucent={true}
+        isVisible={isEditingServer}
+        onDismiss={() => {
+          setIsEditingServer(false);
+        }}
         style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
       >
         <ServerForm
           server={serverToEdit}
-          isEditing={false}
+          isEditing={!isCreatingNewServerEntry}
           onSuccess={async (serverProps: ServerProps) => {
             globalStore.addServer(serverProps);
             await saveData();
@@ -124,6 +122,13 @@ export default function App() {
           onCancel={() => {
             setServerToEdit(createEmptyServerProps());
             setIsEditingServer(false);
+          }}
+          onDelete={async (server: ServerProps): Promise<void> => {
+            setIsEditingServer(false);
+            console.log("OnDelete");
+            globalStore.removeServer(server);
+            await saveData();
+            await loadData();
           }}
         />
       </Modal>

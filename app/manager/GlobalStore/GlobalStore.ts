@@ -37,7 +37,18 @@ export class GlobalStore {
     this.servers.push(...servers);
   }
   public removeServer(server: ServerProps) {
-    this.servers = this.servers.filter((s) => s !== server);
+    console.log("Removing server", server);
+    this.servers = this.servers.filter((s) => {
+      if (
+        s.ip === server.ip &&
+        s.key === server.key &&
+        s.keyName === server.keyName &&
+        s.name === server.name
+      ) {
+        return false;
+      }
+      return true;
+    });
   }
   public updateServer(server: ServerProps) {
     this.servers = this.servers.map((s) => (s === server ? server : s));
